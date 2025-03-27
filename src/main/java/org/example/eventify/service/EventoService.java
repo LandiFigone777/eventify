@@ -16,7 +16,7 @@ public class EventoService {
       return eventoRepository.findAll();
    }
 
-   public Evento findById(Tipo id) {
+   public Evento findById(Integer id) {
       return eventoRepository.findById(id).orElse(null);
    }
 

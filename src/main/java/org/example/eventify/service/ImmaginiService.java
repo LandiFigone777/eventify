@@ -16,7 +16,7 @@ public class ImmaginiService {
       return immaginiRepository.findAll();
    }
 
-   public Immagini findById(Tipo id) {
+   public Immagini findById(String id) {
       return immaginiRepository.findById(id).orElse(null);
    }
 

@@ -16,7 +16,7 @@ public class UtenteService {
       return utenteRepository.findAll();
    }
 
-   public Utente findById(Tipo id) {
+   public Utente findById(String id) {
       return utenteRepository.findById(id).orElse(null);
    }
 

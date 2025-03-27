@@ -16,7 +16,7 @@ public class PartecipazioneService {
       return partecipazioneRepository.findAll();
    }
 
-   public Partecipazione findById(Tipo id) {
+   public Partecipazione findById(Integer id) {
       return partecipazioneRepository.findById(id).orElse(null);
    }
 

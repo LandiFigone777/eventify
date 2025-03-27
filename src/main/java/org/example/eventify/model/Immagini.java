@@ -1,8 +1,6 @@
 package org.example.eventify.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,4 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "Immagini")
 
-public class Immagini {}
+public class Immagini {
+    @Id
+    private String uri;
+    @ManyToOne
+    @JoinColumn(name = "id_evento")
+    private Evento evento;
+}

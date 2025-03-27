@@ -16,7 +16,7 @@ public class FollowersService {
       return followersRepository.findAll();
    }
 
-   public Followers findById(Tipo id) {
+   public Followers findById(Integer id) {
       return followersRepository.findById(id).orElse(null);
    }
 

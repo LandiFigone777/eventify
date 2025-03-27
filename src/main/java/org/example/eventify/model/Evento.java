@@ -19,6 +19,7 @@ import java.util.Date;
 public class Evento {
     @Id
     @Column(name = "id_evento")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idEvento;
     @ManyToOne
     @JoinColumn(name = "creatore", referencedColumnName = "email")
