@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -25,7 +27,7 @@ public class Utente {
     private String nome;
     private String cognome;
     @Column(name = "data_nascita")
-    private Date dataNascita;
+    private LocalDate dataNascita;
     private Integer organizzatore;
     private String stato;
     private String citta;
@@ -33,4 +35,6 @@ public class Utente {
     private String via;
     @Column(name = "num_civico")
     private String numeroCivico;
+
+    private String verificationCode;
 }
