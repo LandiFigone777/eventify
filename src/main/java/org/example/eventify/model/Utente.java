@@ -35,6 +35,5 @@ public class Utente {
     private String via;
     @Column(name = "num_civico")
     private String numeroCivico;
-
     private String verificationCode;
 }

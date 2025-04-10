@@ -29,7 +29,37 @@ public class MainController {
     public String home(RedirectAttributes redirectAttributes) {
         Utente utente = new Utente();
         redirectAttributes.addAttribute("utente", utente);
-        return "redirect:/register";
+        return "redirect:/login";
+    }
+
+    @GetMapping("/home")
+    public String homePage(HttpSession session, Model model) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if (utente != null) {
+            model.addAttribute("utente", utente);
+            return "home";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping("/login")
+    public String loginForm(Model model) {
+        Utente utente = new Utente();
+        model.addAttribute("utente", utente);
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam String emailLogin, @RequestParam String passwordLogin, HttpSession session, RedirectAttributes redirectAttributes) throws NoSuchAlgorithmException {
+        Utente foundUtente = utenteService.findById(emailLogin);
+        if (foundUtente != null && foundUtente.getPassword().equals(hashPassword(passwordLogin))) {
+            session.setAttribute("user", foundUtente);
+            return "redirect:/home";
+        } else {
+            redirectAttributes.addAttribute("msg", "Email o password errati");
+            return "redirect:/login";
+        }
     }
 
     @GetMapping("/register")
@@ -40,20 +70,11 @@ public class MainController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute Utente utente, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String register(@ModelAttribute Utente utente, HttpSession session, RedirectAttributes redirectAttributes) throws NoSuchAlgorithmException {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(utente.getPassword().getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            utente.setPassword(hexString.toString()); // Imposta la password hashata
-        } catch (NoSuchAlgorithmException e) {
+            utente.setPassword(hashPassword(utente.getPassword())); // Hash della password
+        }
+        catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return "/register"; // Torna alla pagina di registrazione in caso di errore
         }
@@ -100,4 +121,22 @@ public class MainController {
 
     }
 
+    public static String hashPassword(String password) throws NoSuchAlgorithmException {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        }
+        catch (NoSuchAlgorithmException e){
+            throw new NoSuchAlgorithmException("Errore durante l'hashing della password");
+        }
+    }
 }
