@@ -151,7 +151,7 @@ public class MainController {
 
     @RestController
     @RequestMapping("/api/places")
-    public class OsmPlaceController {
+    public static class OsmPlaceController {
 
         @GetMapping("/osm-autocomplete")
         public ResponseEntity<List<Map<String, String>>> autocomplete(@RequestParam String query) {
