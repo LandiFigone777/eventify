@@ -1,28 +1,19 @@
 package org.example.eventify.controller;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.eventify.model.Evento;
 import org.example.eventify.model.Utente;
 import org.example.eventify.service.EmailService;
+import org.example.eventify.service.EventoService;
 import org.example.eventify.service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriUtils;
 import org.example.eventify.Utils;
 
 @Controller
@@ -31,6 +22,8 @@ public class MainController {
     private UtenteService utenteService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private EventoService eventoService;
 
     @GetMapping("/")
     public String home(RedirectAttributes redirectAttributes) {
@@ -94,6 +87,13 @@ public class MainController {
         emailService.sendEmail(utente.getEmail(), "Registrazione completata", "La registrazione è avvenuta con successo! Il tuo codice di verifica è: " + verificationCode);
         session.setAttribute("user", utente); // Salva l'utente nella sessione
         return "redirect:/verify"; // Reindirizza alla pagina di login
+    }
+
+    @GetMapping("publicEvents")
+    public String publicEvents(Model model) {
+        List<Evento> eventiPubblici = eventoService.getByVisibilita(1);
+        model.addAttribute("eventiPubblici", eventiPubblici);
+        return "publicEvents";
     }
 
     @GetMapping("/verify")
