@@ -28,7 +28,6 @@ public class Utente {
     private String cognome;
     @Column(name = "data_nascita")
     private LocalDate dataNascita;
-    private Integer organizzatore;
     private String stato;
     private String citta;
     private String cap;

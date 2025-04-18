@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aggiungi evento</title>
+</head>
+<body>
+<form>
+    <input type="text" id="nomeEvento" name="nomeEvento">
+    <input type="datetime-local" id="dataOraInizioEvento" name="dataOraInizioEvento">
+    <input type="datetime-local" id="dataOraFineEvento" name="dataOraFineEvento">
+    <input type="text" id="addressInput" onkeyup="autocompleteAddress()" placeholder="Inserisci indirizzo..." />
+    <ul id="suggestions"></ul>
+
+    <script>
+        let timeout = null;
+
+        function autocompleteAddress() {
+            clearTimeout(timeout);
+            timeout = setTimeout(async () => {
+                const input = document.getElementById('addressInput').value;
+                input.replaceAll(' ', '%20');
+                if (input.length < 3) return;
+
+                const response = await fetch(`/api/places/osm-autocomplete?query=${encodeURIComponent(input)}`);
+                const suggestions = await response.json();
+
+                const list = document.getElementById('suggestions');
+                list.innerHTML = '';
+                suggestions.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item.displayName;
+                    li.onclick = () => {
+                        document.getElementById('addressInput').value = item.displayName;
+                        list.innerHTML = '';
+                    };
+                    list.appendChild(li);
+                });
+            }, 300);
+        }
+    </script>
+</form>
+</body>
+</html>
