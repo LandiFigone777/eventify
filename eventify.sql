@@ -91,7 +91,6 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `cognome` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `data_nascita` date DEFAULT NULL,
-  `organizzatore` int(11) DEFAULT NULL,
   `stato` varchar(255) DEFAULT NULL,
   `citta` varchar(255) DEFAULT NULL,
   `cap` varchar(255) DEFAULT NULL,
