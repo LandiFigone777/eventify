@@ -24,4 +24,7 @@ public class EventoService {
       return eventoRepository.save(evento);
    }
 
+   public List<Evento> getByVisibilita(Integer visibilita) {
+      return eventoRepository.findByVisibilita(visibilita);
+   }
 }

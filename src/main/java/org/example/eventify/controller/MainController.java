@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Random;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.eventify.model.Evento;
 import org.example.eventify.model.Utente;
 import org.example.eventify.service.EmailService;
+import org.example.eventify.service.EventoService;
 import org.example.eventify.service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -30,6 +32,8 @@ public class MainController {
     private UtenteService utenteService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private EventoService eventoService;
 
     @GetMapping("/")
     public String home(RedirectAttributes redirectAttributes) {
@@ -133,6 +137,16 @@ public class MainController {
             return "redirect:/login";
         }
         return "addEvent";
+    }
+
+    @GetMapping("/publicEvents")
+    public String getPublicEvents(Model model, HttpSession session) {
+        if(session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+        List<Evento> eventiPubblici = eventoService.getByVisibilita(1);
+        model.addAttribute("eventiPubblici", eventiPubblici);
+        return "publicEvents";
     }
 
     @RestController

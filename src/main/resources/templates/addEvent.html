@@ -9,9 +9,8 @@
     <input type="text" id="nomeEvento" name="nomeEvento">
     <input type="datetime-local" id="dataOraInizioEvento" name="dataOraInizioEvento">
     <input type="datetime-local" id="dataOraFineEvento" name="dataOraFineEvento">
-    <input type="text" id="addressInput" onkeyup="autocompleteAddress()" placeholder="Inserisci indirizzo..." />
-    <ul id="suggestions"></ul>
-
+    <input type="text" id="addressInput" oninput="autocompleteAddress()" placeholder="Inserisci indirizzo..." />
+    <select id="suggestions" style="display: none;"></select>
     <script>
         let timeout = null;
 
@@ -20,7 +19,6 @@
             timeout = setTimeout(async () => {
                 const input = document.getElementById('addressInput').value;
                 input.replaceAll(' ', '%20');
-                if (input.length < 3) return;
 
                 const response = await fetch(`/api/places/osm-autocomplete?query=${encodeURIComponent(input)}`);
                 const suggestions = await response.json();
@@ -28,15 +26,21 @@
                 const list = document.getElementById('suggestions');
                 list.innerHTML = '';
                 suggestions.forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = item.displayName;
+                    const li = document.createElement('option');
+                    li.text = item.displayName;
+                    li.value = item.displayName;
+                    if(list.innerHTML === '') {
+                        list.style.display = 'none';
+                    } else {
+                        list.style.display = 'block';
+                    }
                     li.onclick = () => {
                         document.getElementById('addressInput').value = item.displayName;
                         list.innerHTML = '';
                     };
                     list.appendChild(li);
                 });
-            }, 300);
+            }, 1000);
         }
     </script>
 </form>
