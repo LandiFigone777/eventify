@@ -90,14 +90,14 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `nome` varchar(255) DEFAULT NULL,
   `cognome` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `data_nascita` date(6) DEFAULT NULL,
+  `data_nascita` date DEFAULT NULL,
   `organizzatore` int(11) DEFAULT NULL,
   `stato` varchar(255) DEFAULT NULL,
   `citta` varchar(255) DEFAULT NULL,
   `cap` varchar(255) DEFAULT NULL,
   `via` varchar(255) DEFAULT NULL,
   `num_civico` varchar(255) DEFAULT NULL,
-  `vcerificationCode` varchar(255) DEFAULT NULL,
+  `verificationCode` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
