@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `cap` varchar(255) DEFAULT NULL,
   `via` varchar(255) DEFAULT NULL,
   `num_civico` varchar(255) DEFAULT NULL,
+  `vcerificationCode` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
