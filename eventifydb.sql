@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Versione server:              10.4.14-MariaDB - mariadb.org binary distribution
+-- Versione server:              10.4.32-MariaDB - mariadb.org binary distribution
 -- S.O. server:                  Win64
 -- HeidiSQL Versione:            12.8.0.6908
 -- --------------------------------------------------------
@@ -16,7 +16,7 @@
 
 
 -- Dump della struttura del database eventify
-CREATE DATABASE IF NOT EXISTS `eventify` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE IF NOT EXISTS `eventify` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `eventify`;
 
 -- Dump della struttura di tabella eventify.evento
@@ -26,10 +26,6 @@ CREATE TABLE IF NOT EXISTS `evento` (
   `nome` varchar(255) DEFAULT NULL,
   `data_ora_inizio` datetime NOT NULL,
   `data_ora_fine` datetime NOT NULL,
-  `stato` varchar(255) DEFAULT NULL,
-  `citta` varchar(255) DEFAULT NULL,
-  `cap` varchar(255) DEFAULT NULL,
-  `via` varchar(255) DEFAULT NULL,
   `num_civico` varchar(255) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   `visibilita` int(11) DEFAULT NULL,
@@ -38,12 +34,13 @@ CREATE TABLE IF NOT EXISTS `evento` (
   `eta_minima` tinyint(5) NOT NULL,
   `partecipanti_max` mediumint(9) NOT NULL DEFAULT 0,
   `likes` int(11) NOT NULL DEFAULT 0,
+  `indirizzo` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_evento`),
   KEY `creatore` (`creatore`),
   CONSTRAINT `fk_evento_creatore` FOREIGN KEY (`creatore`) REFERENCES `utente` (`email`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella eventify.evento: ~0 rows (circa)
+-- L’esportazione dei dati non era selezionata.
 
 -- Dump della struttura di tabella eventify.followers
 CREATE TABLE IF NOT EXISTS `followers` (
@@ -55,20 +52,21 @@ CREATE TABLE IF NOT EXISTS `followers` (
   KEY `followed` (`followed`),
   CONSTRAINT `fk_followers_followed` FOREIGN KEY (`followed`) REFERENCES `utente` (`email`) ON DELETE CASCADE,
   CONSTRAINT `fk_followers_follower` FOREIGN KEY (`follower`) REFERENCES `utente` (`email`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella eventify.followers: ~0 rows (circa)
+-- L’esportazione dei dati non era selezionata.
 
 -- Dump della struttura di tabella eventify.immagini_evento
 CREATE TABLE IF NOT EXISTS `immagini_evento` (
-  `uri_immagine` varchar(255) NOT NULL,
+  `uri_immagine` varchar(5000) NOT NULL DEFAULT '',
   `id_evento` int(11) NOT NULL,
-  PRIMARY KEY (`uri_immagine`),
+  `id_immagine` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_immagine`),
   KEY `id_evento` (`id_evento`),
   CONSTRAINT `fk_immagini_evento_id_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella eventify.immagini_evento: ~0 rows (circa)
+-- L’esportazione dei dati non era selezionata.
 
 -- Dump della struttura di tabella eventify.partecipazione
 CREATE TABLE IF NOT EXISTS `partecipazione` (
@@ -80,9 +78,9 @@ CREATE TABLE IF NOT EXISTS `partecipazione` (
   KEY `fk_partecipazione_id_evento` (`id_evento`),
   CONSTRAINT `fk_partecipazione_email` FOREIGN KEY (`email`) REFERENCES `utente` (`email`) ON DELETE CASCADE,
   CONSTRAINT `fk_partecipazione_id_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella eventify.partecipazione: ~0 rows (circa)
+-- L’esportazione dei dati non era selezionata.
 
 -- Dump della struttura di tabella eventify.utente
 CREATE TABLE IF NOT EXISTS `utente` (
@@ -96,11 +94,11 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `cap` varchar(255) DEFAULT NULL,
   `via` varchar(255) DEFAULT NULL,
   `num_civico` varchar(255) DEFAULT NULL,
-  `verificationCode` varchar(255) DEFAULT NULL,
+  `verificationCode` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella eventify.utente: ~0 rows (circa)
+-- L’esportazione dei dati non era selezionata.
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
