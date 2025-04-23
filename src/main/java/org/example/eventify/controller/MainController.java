@@ -72,13 +72,13 @@ public class MainController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute Utente utente, HttpSession session, RedirectAttributes redirectAttributes) throws NoSuchAlgorithmException {
+    public String register(@ModelAttribute Utente utente, HttpSession session){
         try {
-            utente.setPassword(Utils.hashPassword(utente.getPassword())); // Hash della password
+            utente.setPassword(Utils.hashPassword(utente.getPassword()));
         }
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return "/register"; // Torna alla pagina di registrazione in caso di errore
+            return "/register";
         }
 
         // Generate verification code

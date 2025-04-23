@@ -84,6 +84,19 @@ public class EventController {
         return "redirect:/home";
     }
 
+    @GetMapping("yourEvents")
+    public String yourEvents(HttpSession session, Model model) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if (utente != null) {
+            model.addAttribute("utente", utente);
+            List<Evento> eventi = eventoService.getByOrganizzatore(utente);
+            model.addAttribute("eventi", eventi);
+            return "yourCreations";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
     @PostMapping("/subscribe")
     public String subscribe(@RequestParam Integer idEvento, HttpSession session) {
         Utente utente = (Utente) session.getAttribute("user");
@@ -125,7 +138,7 @@ public class EventController {
         @GetMapping("/osm-autocomplete")
         public ResponseEntity<List<Map<String, String>>> autocomplete(@RequestParam String query) {
             RestTemplate restTemplate = new RestTemplate();
-            String requestString = "https://nominatim.openstreetmap.org/search?q="+query+"&format=json&addressdetails=1&limit=5";
+            String requestString = "https://nominatim.openstreetmap.org/search?q="+query+"&format=json&limit=5";
 
             String url = String.format(
                     requestString,

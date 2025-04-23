@@ -1,5 +1,6 @@
 package org.example.eventify.service;
 
+import org.example.eventify.model.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.eventify.model.Evento;
@@ -27,4 +28,8 @@ public class EventoService {
    public List<Evento> getByVisibilita(Integer visibilita) {
       return eventoRepository.findByVisibilita(visibilita);
    }
+
+    public List<Evento> getByOrganizzatore(Utente utente) {
+        return eventoRepository.getByOrganizzatore(utente);
+    }
 }
