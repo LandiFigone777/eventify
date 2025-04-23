@@ -6,6 +6,32 @@
 </head>
 <body>
 <p>sei nella home</p>
-<a href="addEvent">Inserisci nuovo evento</a>
+<a href="addEvent">Inserisci nuovo evento</a><br>
+<h2>Eventi pubblici</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Nome Evento</th>
+        <th>Data e ora inizio</th>
+        <th>Data e ora fine</th>
+        <th>Luogo</th>
+        <th>Iscrizione</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="evento : ${eventiHome}">
+        <td th:text="${evento.nome}"></td>
+        <td th:text="${evento.dataOraInizio}"></td>
+        <td th:text="${evento.dataOraFine}"></td>
+        <td th:text="${evento.indirizzo}"></td>
+        <td>
+            <form action="/subscribe" method="post">
+                <input type="hidden" name="idEvento" th:value="${evento.idEvento}"/>
+                <input type="submit" value="Iscriviti"/>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

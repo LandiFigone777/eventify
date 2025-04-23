@@ -37,6 +37,8 @@ public class MainController {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente != null) {
             model.addAttribute("utente", utente);
+            List<Evento> eventiHome = eventoService.getByVisibilita(1);
+            model.addAttribute("eventiHome", eventiHome);
             return "home";
         } else {
             return "redirect:/login";
@@ -89,7 +91,7 @@ public class MainController {
         return "redirect:/verify"; // Reindirizza alla pagina di login
     }
 
-    @GetMapping("publicEvents")
+    @GetMapping("/publicEvents")
     public String publicEvents(Model model) {
         List<Evento> eventiPubblici = eventoService.getByVisibilita(1);
         model.addAttribute("eventiPubblici", eventiPubblici);

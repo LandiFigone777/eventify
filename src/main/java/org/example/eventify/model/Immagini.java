@@ -11,10 +11,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Immagini")
+@Table(name = "immagini_evento")
 
 public class Immagini {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_immagine")
+    private Integer idImmagine;
+    @Column(name = "uri_immagine")
     private String uri;
     @ManyToOne
     @JoinColumn(name = "id_evento")
