@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventi pubblici</title>
+</head>
+<body>
+<h1>Eventi pubblici</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Nome Evento</th>
+        <th>Data e ora inizio</th>
+        <th>Data e ora fine</th>
+        <th>Luogo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="evento : ${eventiPubblici}">
+        <td th:text="${evento.nome}"></td>
+        <td th:text="${#dates.format(evento.dataOraInizio, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${#dates.format(evento.dataOraFine, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${evento.luogo}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

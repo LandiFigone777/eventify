@@ -29,15 +29,14 @@ public class Evento {
     private LocalDateTime dataOraInizio;
     @Column(name = "data_ora_fine")
     private LocalDateTime dataOraFine;
-    private String stato;
-    private String citta;
-    private String cap;
-    private String via;
+    private String indirizzo;
     @Column(name = "num_civico")
     private String numeroCivico;
     private String tipo;
     private Integer visibilita;
     private String descrizione;
+    @Column(name = "eta_minima")
+    private Integer etaMinima;
     @Column(name = "costo")
     private Float costoIngresso;
     @Column(name = "partecipanti_max")

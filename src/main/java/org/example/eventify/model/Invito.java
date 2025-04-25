@@ -13,13 +13,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "immagini_evento")
 
-public class Immagini {
+public class Invito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_immagine")
-    private Integer idImmagine;
-    @Column(name = "uri_immagine")
-    private String uri;
+    @Column(name = "id_invito")
+    private Integer idInvito;
+    @ManyToOne
+    @JoinColumn(name = "id_invitato", referencedColumnName = "email")
+    private Utente invitato;
     @ManyToOne
     @JoinColumn(name = "id_evento")
     private Evento evento;
