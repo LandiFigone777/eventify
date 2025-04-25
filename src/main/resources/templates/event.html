@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${evento.nome}"></title>
+</head>
+<body>
+<h1 th:text="${evento.nome}"></h1><br>
+<p>Data e ora inizio: </p><p th:text="${evento.dataOraInizio}"></p><br>
+<p>Data e ora fine: </p><p th:text="${evento.dataOraFine}"></p><br>
+<p>Indirizzo: </p><p th:text="${evento.indirizzo}"></p><br>
+<p>Tipo evento: </p><p th:text="${evento.tipo}"></p><br>
+<p>Descrizione: </p><p th:text="${evento.descrizione}"></p><br>
+<p>Età minima: </p><p th:text="${evento.etaMinima}"></p><br>
+<p>Partecipanti massimi</p><p th:text="${evento.maxPartecipanti}"></p><br>
+<p>Costo ingresso: </p><p th:text="${evento.costoIngresso}"></p><br>
+<form method="post" action="/likeEvent">
+    <input type="submit" id="like" name="like" th:value="${liked}"><p th:text="${likesNumber} + ' like totali'"></p>
+    <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
+</form>
+<form method="post" action="/subscribe">
+    <input type="submit" value="Iscriviti">
+    <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
+</form>
+</body>
+<script>
+    const text = document.getElementById("like");
+    if(text.value === "true") {
+        text.value = "HAI MESSO MI PIACE";
+    } else {
+        text.value= "NON HAI MESSO MI PIACE";
+    }
+</script>
+</html>

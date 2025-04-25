@@ -1,5 +1,7 @@
 package org.example.eventify.service;
 
+import org.example.eventify.model.Evento;
+import org.example.eventify.model.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.eventify.model.Partecipazione;
@@ -24,4 +26,7 @@ public class PartecipazioneService {
       return partecipazioneRepository.save(partecipazione);
    }
 
+    public Partecipazione getPartecipazioneByEventoAndPartecipante(Evento evento, Utente partecipante) {
+        return partecipazioneRepository.getPartecipazioneByEventoAndPartecipante(evento, partecipante);
+    }
 }

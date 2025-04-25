@@ -2,10 +2,13 @@ package org.example.eventify.service;
 
 import org.example.eventify.model.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.example.eventify.model.Evento;
 import org.example.eventify.repository.EventoRepository;
 
+import java.lang.annotation.Native;
 import java.util.List;
 
 @Service
@@ -31,5 +34,9 @@ public class EventoService {
 
     public List<Evento> getByOrganizzatore(Utente utente) {
         return eventoRepository.getByOrganizzatore(utente);
+    }
+
+    public List<Integer> getEventiOrderedByPopolarita() {
+        return eventoRepository.getEventiOrderedByPopolarita();
     }
 }

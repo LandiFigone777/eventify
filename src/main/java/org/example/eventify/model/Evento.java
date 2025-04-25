@@ -41,5 +41,4 @@ public class Evento {
     private Float costoIngresso;
     @Column(name = "partecipanti_max")
     private Integer maxPartecipanti;
-    private Integer likes;
 }
