@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.example.eventify.model.Partecipazione;
-import org.example.eventify.model.Utente;
-import org.example.eventify.model.Evento;
-import org.example.eventify.model.Immagini;
+import org.example.eventify.model.*;
 import org.example.eventify.repository.ImmaginiRepository;
 import org.example.eventify.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import jakarta.servlet.http.HttpSession;
@@ -41,6 +39,8 @@ public class EventController {
     private ImmaginiService immaginiService;
     @Autowired
     private PartecipazioneService partecipazioneService;
+    @Autowired
+    private EventiPreferitiService eventiPreferitiService;
 
 
     @GetMapping("/addEvent")
@@ -78,7 +78,6 @@ public class EventController {
         evento.setEtaMinima(etaMinima);
         evento.setMaxPartecipanti(maxPartecipanti);
         evento.setOrganizzatore(utente);
-        evento.setLikes(0);
         eventoService.save(evento);
         addImages(immagini, evento);
         return "redirect:/home";
@@ -108,6 +107,51 @@ public class EventController {
             partecipazioneService.save(partecipazione);
         }
         return "redirect:/home";
+    }
+
+    @GetMapping("/event")
+    public String showEvent(@RequestParam("id") Integer idEvento, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if (utente != null) {
+            model.addAttribute("utente", utente);
+            Evento evento = eventoService.findById(idEvento);
+            if(evento == null) {
+                redirectAttributes.addAttribute("msg", "Evento non trovato");
+                return "redirect:/home";
+            }
+            if(evento.getVisibilita() == 0 && (!evento.getOrganizzatore().getEmail().equals(utente.getEmail()) || partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null)) {
+                redirectAttributes.addAttribute("msg", "Evento privato, non puoi visualizzarlo se non sei invitato o non sei l'organizzatore");
+                return "redirect:/home";
+            }
+            model.addAttribute("evento", evento);
+            if(eventiPreferitiService.getByLikerAndEvento(utente, evento) != null) {
+                model.addAttribute("liked", true);
+            } else {
+                model.addAttribute("liked", false);
+            }
+            model.addAttribute("likesNumber" , eventiPreferitiService.countAllByEvento(evento));
+            return "event";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @PostMapping("/likeEvent")
+    public String likeEvent(@RequestParam Integer idEvento, @RequestParam String like, HttpSession session) {
+        Utente utente = (Utente) session.getAttribute("user");
+        Evento evento = eventoService.findById(idEvento);
+        if (evento != null) {
+            if(like.equals("NON HAI MESSO MI PIACE")) {
+                EventiPreferiti likeEvento = new EventiPreferiti();
+                likeEvento.setLiker(utente);
+                likeEvento.setEvento(evento);
+                eventiPreferitiService.save(likeEvento);
+            } else {
+                EventiPreferiti likeEvento = eventiPreferitiService.getByLikerAndEvento(utente, evento);
+                eventiPreferitiService.delete(likeEvento);
+            }
+        }
+        return "redirect:/event?id=" + idEvento;
     }
 
     public void addImages(List<MultipartFile> immagini, Evento evento){

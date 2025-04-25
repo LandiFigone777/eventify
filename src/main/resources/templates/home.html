@@ -8,7 +8,8 @@
 <p>sei nella home</p>
 <a href="addEvent">Inserisci nuovo evento</a><br>
 <a href="yourEvents">I tuoi eventi creati</a>
-<h2>Eventi pubblici</h2>
+<h2>Eventi pubblici in ordine di popolarità</h2>
+<h3 th:text="${msg}"></h3>
 <table>
     <thead>
     <tr>
@@ -26,9 +27,9 @@
         <td th:text="${evento.dataOraFine}"></td>
         <td th:text="${evento.indirizzo}"></td>
         <td>
-            <form action="/subscribe" method="post">
-                <input type="hidden" name="idEvento" th:value="${evento.idEvento}"/>
-                <input type="submit" value="Iscriviti"/>
+            <form action="/event" method="get">
+                <input type="hidden" name="id" th:value="${evento.idEvento}"/>
+                <input type="submit" value="Dettagli evento"/>
             </form>
         </td>
     </tr>

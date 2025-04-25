@@ -1,6 +1,7 @@
 package org.example.eventify.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
@@ -33,12 +34,18 @@ public class MainController {
     }
 
     @GetMapping("/home")
-    public String homePage(HttpSession session, Model model) {
+    public String homePage(HttpSession session, Model model, @RequestParam(required = false) String msg) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente != null) {
             model.addAttribute("utente", utente);
-            List<Evento> eventiHome = eventoService.getByVisibilita(1);
-            model.addAttribute("eventiHome", eventiHome);
+            List<Integer> eventiHome = eventoService.getEventiOrderedByPopolarita();
+            List<Evento> eventiHomeObj = new ArrayList<>();
+            for(Integer evento : eventiHome) {
+                Evento eventoObj = eventoService.findById(evento);
+                eventiHomeObj.add(eventoObj);
+            }
+            model.addAttribute("eventiHome", eventiHomeObj);
+            model.addAttribute("msg", msg);
             return "home";
         } else {
             return "redirect:/login";
