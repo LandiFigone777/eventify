@@ -218,7 +218,7 @@ public class EventController {
             model.addAttribute("partecipato", false);
         }
 
-        if(eventoService.findById(idEvento).getOrganizzatore() == utente) {
+        if(eventoService.findById(idEvento).getOrganizzatore().getEmail().equals(utente.getEmail())) {
             model.addAttribute("isOwner", true);
         } else {
             model.addAttribute("isOwner", false);

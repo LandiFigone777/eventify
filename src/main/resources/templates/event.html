@@ -23,9 +23,9 @@
     <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
 </form>
 
-
+<p th:text="'isOwner: ' + ${isOwner}"></p>
 <p id="linkInvito" style="display: none" th:text="'localhost:8080/event?id=' + ${evento.idEvento} + '&invitation=' + ${evento.invito}"></p>
-<button th:if="${(isOwner == 'true' && evento.visibilita == 0) || evento.visibilita == 1}" onclick="copyToClipboard(document.getElementById('linkInvito').innerText)">Copia link invito</button>
+<button th:if="${(isOwner && evento.visibilita == 0) || evento.visibilita == 1}" onclick="copyToClipboard(document.getElementById('linkInvito').innerText)">Copia link invito</button>
 
 </body>
 <script>
