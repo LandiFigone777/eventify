@@ -26,7 +26,11 @@ public class PartecipazioneService {
       return partecipazioneRepository.save(partecipazione);
    }
 
-    public Partecipazione getPartecipazioneByEventoAndPartecipante(Evento evento, Utente partecipante) {
+   public Partecipazione getPartecipazioneByEventoAndPartecipante(Evento evento, Utente partecipante) {
         return partecipazioneRepository.getPartecipazioneByEventoAndPartecipante(evento, partecipante);
-    }
+   }
+
+   public List<Partecipazione> getPartecipazioneByPartecipante(Utente partecipante) {
+        return partecipazioneRepository.getPartecipazioneByPartecipante(partecipante);
+   }
 }

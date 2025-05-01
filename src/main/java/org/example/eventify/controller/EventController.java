@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.example.eventify.Utils;
 import org.example.eventify.model.*;
@@ -118,6 +115,7 @@ public class EventController {
                 Partecipazione partecipazione = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente);
                 if(partecipazione != null) {
                     partecipazioneRepository.delete(partecipazione);
+                    return "redirect:/home?msg=Disiscrizione avvenuta con successo";
                 }
             } else if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null) {
                 Partecipazione partecipazione = new Partecipazione();
@@ -126,7 +124,25 @@ public class EventController {
                 partecipazioneService.save(partecipazione);
             }
         }
-        return "redirect:/event?id=" + idEvento;
+        return "redirect:/home?msg=Iscrizione avvenuta con successo";
+    }
+
+    @GetMapping("/subscriptions")
+    public String subscriptions(HttpSession session, Model model) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if (utente != null) {
+            model.addAttribute("utente", utente);
+            List<Partecipazione> partecipazioni = partecipazioneService.getPartecipazioneByPartecipante(utente);
+            List<Evento> eventiPartecipati = new ArrayList<>();
+            for(Partecipazione partecipazione : partecipazioni){
+                Evento evento = eventoService.findById(partecipazione.getEvento().getIdEvento());
+                eventiPartecipati.add(evento);
+            }
+            model.addAttribute("partecipazioni", eventiPartecipati);
+            return "subscriptions";
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @GetMapping("/event")

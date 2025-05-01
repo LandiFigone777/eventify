@@ -52,8 +52,17 @@ public class MainController {
         }
     }
 
+    @PostMapping("/exit")
+    public String exit(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
     @GetMapping("/login")
-    public String loginForm(Model model) {
+    public String loginForm(Model model, HttpSession session) {
+        if(session.getAttribute("user") != null) {
+            return "redirect:/home";
+        }
         Utente utente = new Utente();
         model.addAttribute("utente", utente);
         return "login";
@@ -80,6 +89,9 @@ public class MainController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute Utente utente, HttpSession session){
+        if(session.getAttribute("user") != null) {
+            return "redirect:/home";
+        }
         try {
             utente.setPassword(Utils.hashPassword(utente.getPassword()));
         }
