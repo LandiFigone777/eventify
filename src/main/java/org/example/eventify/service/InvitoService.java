@@ -1,6 +1,8 @@
 package org.example.eventify.service;
 
+import org.example.eventify.model.Evento;
 import org.example.eventify.model.Invito;
+import org.example.eventify.model.Utente;
 import org.example.eventify.repository.InvitoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,4 +27,7 @@ public class InvitoService {
         return invitoRepository.save(invito);
     }
 
+    public Invito getInvitoByEventoAndInvitato(Evento evento, Utente utente) {
+        return invitoRepository.getInvitoByEventoAndInvitato(evento, utente);
+    }
 }

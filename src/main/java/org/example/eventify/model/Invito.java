@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "immagini_evento")
+@Table(name = "invito")
 
 public class Invito {
     @Id

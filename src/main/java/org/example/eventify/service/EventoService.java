@@ -39,4 +39,8 @@ public class EventoService {
     public List<Integer> getEventiOrderedByPopolarita() {
         return eventoRepository.getEventiOrderedByPopolarita();
     }
+
+    public boolean existsByInvito(String invito) {
+        return eventoRepository.existsByInvito(invito);
+    }
 }

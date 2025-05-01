@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `eventi_preferiti` (
   KEY `FK__utente` (`email`),
   CONSTRAINT `FK__evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK__utente` FOREIGN KEY (`email`) REFERENCES `utente` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -48,10 +48,11 @@ CREATE TABLE IF NOT EXISTS `evento` (
   `eta_minima` tinyint(5) NOT NULL,
   `partecipanti_max` mediumint(9) NOT NULL DEFAULT 0,
   `indirizzo` varchar(50) DEFAULT NULL,
+  `invito` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_evento`),
   KEY `creatore` (`creatore`),
   CONSTRAINT `fk_evento_creatore` FOREIGN KEY (`creatore`) REFERENCES `utente` (`email`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -91,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `invito` (
   KEY `FK_inviti_evento` (`id_evento`),
   CONSTRAINT `FK_inviti_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_inviti_utente` FOREIGN KEY (`id_invitato`) REFERENCES `utente` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -105,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `partecipazione` (
   KEY `fk_partecipazione_id_evento` (`id_evento`),
   CONSTRAINT `fk_partecipazione_email` FOREIGN KEY (`email`) REFERENCES `utente` (`email`) ON DELETE CASCADE,
   CONSTRAINT `fk_partecipazione_id_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 

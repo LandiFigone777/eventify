@@ -19,4 +19,5 @@ public interface EventoRepository extends JpaRepository<Evento, Integer> {
             GROUP BY evento.id_evento
             ORDER BY COUNT(eventi_preferiti.id_evento) DESC""")
     List<Integer> getEventiOrderedByPopolarita();
+    Boolean existsByInvito(String invito);
 }
