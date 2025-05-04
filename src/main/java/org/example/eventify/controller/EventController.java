@@ -64,6 +64,9 @@ public class EventController {
                            @RequestParam String descrizione, @RequestParam Integer etaMinima,
                            @RequestParam Float costoIngresso,
                            @RequestParam Integer maxPartecipanti, @RequestParam List<MultipartFile> immagini, HttpSession session) {
+        if(session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
         Utente utente = (Utente) session.getAttribute("user");
         Evento evento = new Evento();
         evento.setNome(nome);
@@ -109,6 +112,9 @@ public class EventController {
     @PostMapping("/subscribe")
     public String subscribe(@RequestParam Integer idEvento, @RequestParam String partecipa, HttpSession session) {
         Utente utente = (Utente) session.getAttribute("user");
+        if (utente == null) {
+            return "redirect:/login";
+        }
         Evento evento = eventoService.findById(idEvento);
         if (evento != null) {
             if(partecipa.equals("DISISCRIVITI")) {
@@ -185,6 +191,9 @@ public class EventController {
     @PostMapping("/likeEvent")
     public String likeEvent(@RequestParam Integer idEvento, @RequestParam String like, HttpSession session) {
         Utente utente = (Utente) session.getAttribute("user");
+        if (utente == null) {
+            return "redirect:/login";
+        }
         Evento evento = eventoService.findById(idEvento);
         if (evento != null) {
             if(like.equals("NON HAI MESSO MI PIACE")) {

@@ -19,6 +19,41 @@
 CREATE DATABASE IF NOT EXISTS `eventify` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `eventify`;
 
+CREATE TABLE IF NOT EXISTS `utente` (
+  `email` varchar(255) NOT NULL,
+  `nome` varchar(255) DEFAULT NULL,
+  `cognome` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `data_nascita` date DEFAULT NULL,
+  `stato` varchar(255) DEFAULT NULL,
+  `citta` varchar(255) DEFAULT NULL,
+  `cap` varchar(255) DEFAULT NULL,
+  `via` varchar(255) DEFAULT NULL,
+  `num_civico` varchar(255) DEFAULT NULL,
+  `verificationCode` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+CREATE TABLE IF NOT EXISTS `evento` (
+  `id_evento` int(11) NOT NULL AUTO_INCREMENT,
+  `creatore` varchar(255) DEFAULT NULL,
+  `nome` varchar(255) DEFAULT NULL,
+  `data_ora_inizio` datetime NOT NULL,
+  `data_ora_fine` datetime NOT NULL,
+  `num_civico` varchar(255) DEFAULT NULL,
+  `tipo` varchar(255) DEFAULT NULL,
+  `visibilita` int(11) DEFAULT NULL,
+  `descrizione` varchar(255) DEFAULT NULL,
+  `costo` float DEFAULT NULL,
+  `eta_minima` tinyint(5) NOT NULL,
+  `partecipanti_max` mediumint(9) NOT NULL DEFAULT 0,
+  `indirizzo` varchar(255) DEFAULT NULL,
+  `invito` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id_evento`),
+  KEY `creatore` (`creatore`),
+  CONSTRAINT `fk_evento_creatore` FOREIGN KEY (`creatore`) REFERENCES `utente` (`email`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 -- Dump della struttura di tabella eventify.eventi_preferiti
 CREATE TABLE IF NOT EXISTS `eventi_preferiti` (
   `id_evento` int(11) DEFAULT NULL,
@@ -34,25 +69,7 @@ CREATE TABLE IF NOT EXISTS `eventi_preferiti` (
 -- L’esportazione dei dati non era selezionata.
 
 -- Dump della struttura di tabella eventify.evento
-CREATE TABLE IF NOT EXISTS `evento` (
-  `id_evento` int(11) NOT NULL AUTO_INCREMENT,
-  `creatore` varchar(255) DEFAULT NULL,
-  `nome` varchar(255) DEFAULT NULL,
-  `data_ora_inizio` datetime NOT NULL,
-  `data_ora_fine` datetime NOT NULL,
-  `num_civico` varchar(255) DEFAULT NULL,
-  `tipo` varchar(255) DEFAULT NULL,
-  `visibilita` int(11) DEFAULT NULL,
-  `descrizione` varchar(255) DEFAULT NULL,
-  `costo` float DEFAULT NULL,
-  `eta_minima` tinyint(5) NOT NULL,
-  `partecipanti_max` mediumint(9) NOT NULL DEFAULT 0,
-  `indirizzo` varchar(50) DEFAULT NULL,
-  `invito` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id_evento`),
-  KEY `creatore` (`creatore`),
-  CONSTRAINT `fk_evento_creatore` FOREIGN KEY (`creatore`) REFERENCES `utente` (`email`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -111,20 +128,7 @@ CREATE TABLE IF NOT EXISTS `partecipazione` (
 -- L’esportazione dei dati non era selezionata.
 
 -- Dump della struttura di tabella eventify.utente
-CREATE TABLE IF NOT EXISTS `utente` (
-  `email` varchar(255) NOT NULL,
-  `nome` varchar(255) DEFAULT NULL,
-  `cognome` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `data_nascita` date DEFAULT NULL,
-  `stato` varchar(255) DEFAULT NULL,
-  `citta` varchar(255) DEFAULT NULL,
-  `cap` varchar(255) DEFAULT NULL,
-  `via` varchar(255) DEFAULT NULL,
-  `num_civico` varchar(255) DEFAULT NULL,
-  `verificationCode` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 
 -- L’esportazione dei dati non era selezionata.
 
