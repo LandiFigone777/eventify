@@ -6,7 +6,6 @@
 </head>
 <body>
 <h1>I tuoi eventi creati</h1>
-<p id="creatore" th:text="${utente.email}"></p>
 <table>
     <thead>
     <tr>
@@ -23,19 +22,13 @@
         <td th:text="${evento.dataOraFine}"></td>
         <td th:text="${evento.indirizzo}"></td>
         <td>
-            <button onclick="copyToClipboard(document.getElementById('creatore').innerText)">Copia link d'invito</button>
+            <form action="/event" method="get">
+                <input type="hidden" name="id" th:value="${evento.idEvento}"/>
+                <input type="submit" value="Dettagli evento"/>
+            </form>
         </td>
     </tr>
     </tbody>
 </table>
 </body>
-<script>
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Copied to clipboard!");
-        }).catch(err => {
-            console.error("Failed to copy: ", err);
-        });
-    }
-</script>
 </html>

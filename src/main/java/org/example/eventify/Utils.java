@@ -35,4 +35,18 @@ public class Utils {
             throw new NoSuchAlgorithmException("Errore durante l'hashing della password");
         }
     }
+
+    public static String generateUid() {
+
+        Random random = new Random();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        char[] array = characters.toCharArray();
+        char[] uid = new char[24];
+
+        for(int i=0;i<24;i++){
+            uid[i] = array[Math.abs(random.nextInt() % 62)];
+        }
+
+        return new String(uid);
+    }
 }

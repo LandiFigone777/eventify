@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.example.eventify.Utils;
 import org.example.eventify.model.*;
 import org.example.eventify.repository.ImmaginiRepository;
+import org.example.eventify.repository.InvitoRepository;
+import org.example.eventify.repository.PartecipazioneRepository;
 import org.example.eventify.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -41,6 +42,10 @@ public class EventController {
     private PartecipazioneService partecipazioneService;
     @Autowired
     private EventiPreferitiService eventiPreferitiService;
+    @Autowired
+    private PartecipazioneRepository partecipazioneRepository;
+    @Autowired
+    private InvitoService invitoService;
 
 
     @GetMapping("/addEvent")
@@ -71,6 +76,11 @@ public class EventController {
             visibilita = "1";
         } else if(visibilita.equals("privato")) {
             visibilita = "0";
+            String invito = Utils.generateUid();
+            while (eventoService.existsByInvito(invito)) {
+                invito = Utils.generateUid();
+            }
+            evento.setInvito(invito);
         }
         evento.setVisibilita(Integer.parseInt(visibilita));
         evento.setDescrizione(descrizione);
@@ -97,43 +107,79 @@ public class EventController {
     }
 
     @PostMapping("/subscribe")
-    public String subscribe(@RequestParam Integer idEvento, HttpSession session) {
+    public String subscribe(@RequestParam Integer idEvento, @RequestParam String partecipa, HttpSession session) {
         Utente utente = (Utente) session.getAttribute("user");
         Evento evento = eventoService.findById(idEvento);
         if (evento != null) {
-            Partecipazione partecipazione = new Partecipazione();
-            partecipazione.setPartecipante(utente);
-            partecipazione.setEvento(evento);
-            partecipazioneService.save(partecipazione);
+            if(partecipa.equals("DISISCRIVITI")) {
+                Partecipazione partecipazione = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente);
+                if(partecipazione != null) {
+                    partecipazioneRepository.delete(partecipazione);
+                    return "redirect:/home?msg=Disiscrizione avvenuta con successo";
+                }
+            } else if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null) {
+                Partecipazione partecipazione = new Partecipazione();
+                partecipazione.setPartecipante(utente);
+                partecipazione.setEvento(evento);
+                partecipazioneService.save(partecipazione);
+            }
         }
-        return "redirect:/home";
+        return "redirect:/home?msg=Iscrizione avvenuta con successo";
     }
 
-    @GetMapping("/event")
-    public String showEvent(@RequestParam("id") Integer idEvento, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+    @GetMapping("/subscriptions")
+    public String subscriptions(HttpSession session, Model model) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente != null) {
             model.addAttribute("utente", utente);
+            List<Partecipazione> partecipazioni = partecipazioneService.getPartecipazioneByPartecipante(utente);
+            List<Evento> eventiPartecipati = new ArrayList<>();
+            for(Partecipazione partecipazione : partecipazioni){
+                Evento evento = eventoService.findById(partecipazione.getEvento().getIdEvento());
+                eventiPartecipati.add(evento);
+            }
+            model.addAttribute("partecipazioni", eventiPartecipati);
+            return "subscriptions";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping("/event")
+    public String showEvent(@RequestParam("id") Integer idEvento, @RequestParam(value = "invitation", required = false) String invito, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if (utente != null) {
             Evento evento = eventoService.findById(idEvento);
             if(evento == null) {
                 redirectAttributes.addAttribute("msg", "Evento non trovato");
                 return "redirect:/home";
             }
-            if(evento.getVisibilita() == 0 && (!evento.getOrganizzatore().getEmail().equals(utente.getEmail()) || partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null)) {
+            if(evento.getVisibilita() == 1){
+                return eventChecks(model, evento, utente, idEvento);
+            }
+            if(evento.getVisibilita() == 0 && evento.getOrganizzatore().getEmail().equals(utente.getEmail())){
+                return eventChecks(model, evento, utente, idEvento);
+            }
+            else if(evento.getVisibilita() == 0 && partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && invitoService.getInvitoByEventoAndInvitato(evento, utente) != null){
+                return eventChecks(model, evento, utente, idEvento);
+            }
+            else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null || Objects.equals(evento.getInvito(), invito))) {
+                if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && Objects.equals(evento.getInvito(), invito)){
+                    if(invitoService.getInvitoByEventoAndInvitato(evento, utente) == null) {
+                        Invito invito1 = new Invito();
+                        invito1.setEvento(evento);
+                        invito1.setInvitato(utente);
+                        invitoService.save(invito1);
+                    }
+                }
+                return eventChecks(model, evento, utente, idEvento);
+            }
+            else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null || !Objects.equals(evento.getInvito(), invito) || invitoService.getInvitoByEventoAndInvitato(evento, utente) == null)) {
                 redirectAttributes.addAttribute("msg", "Evento privato, non puoi visualizzarlo se non sei invitato o non sei l'organizzatore");
                 return "redirect:/home";
             }
-            model.addAttribute("evento", evento);
-            if(eventiPreferitiService.getByLikerAndEvento(utente, evento) != null) {
-                model.addAttribute("liked", true);
-            } else {
-                model.addAttribute("liked", false);
-            }
-            model.addAttribute("likesNumber" , eventiPreferitiService.countAllByEvento(evento));
-            return "event";
-        } else {
-            return "redirect:/login";
         }
+        return "redirect:/login";
     }
 
     @PostMapping("/likeEvent")
@@ -173,6 +219,29 @@ public class EventController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String eventChecks(Model model, Evento evento, Utente utente, Integer idEvento){
+        model.addAttribute("evento", evento);
+        if(eventiPreferitiService.getByLikerAndEvento(utente, evento) != null) {
+            model.addAttribute("liked", true);
+        } else {
+            model.addAttribute("liked", false);
+        }
+        if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null) {
+            model.addAttribute("partecipato", true);
+        } else {
+            model.addAttribute("partecipato", false);
+        }
+
+        if(eventoService.findById(idEvento).getOrganizzatore().getEmail().equals(utente.getEmail())) {
+            model.addAttribute("isOwner", true);
+        } else {
+            model.addAttribute("isOwner", false);
+        }
+
+        model.addAttribute("likesNumber" , eventiPreferitiService.countAllByEvento(evento));
+        return "event";
     }
 
     @RestController

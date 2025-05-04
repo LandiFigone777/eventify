@@ -2,18 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Le tue partecipazioni</title>
 </head>
 <body>
-<p>sei nella home</p>
-<a href="addEvent">Inserisci nuovo evento</a><br>
-<a href="yourEvents">I tuoi eventi creati</a><br>
-<a href="subscriptions">Gli eventi a cui sei iscritto</a>
-<form action="/exit" method="post">
-    <input type="submit" value="Esci"/>
-</form>
-<h2>Eventi pubblici in ordine di popolarità</h2>
-<h3 th:text="${msg}"></h3>
+<h1>Eventi a cui sei iscritto</h1>
 <table>
     <thead>
     <tr>
@@ -21,11 +13,10 @@
         <th>Data e ora inizio</th>
         <th>Data e ora fine</th>
         <th>Luogo</th>
-        <th>Iscrizione</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="evento : ${eventiHome}">
+    <tr th:each="evento : ${partecipazioni}">
         <td th:text="${evento.nome}"></td>
         <td th:text="${evento.dataOraInizio}"></td>
         <td th:text="${evento.dataOraFine}"></td>

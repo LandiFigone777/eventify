@@ -19,16 +19,36 @@
     <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
 </form>
 <form method="post" action="/subscribe">
-    <input type="submit" value="Iscriviti">
+    <input type="submit" id="partecipa" name="partecipa" th:value="${partecipato}">
     <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
 </form>
+
+<p th:text="'isOwner: ' + ${isOwner}"></p>
+<input id="linkInvito" type="hidden" th:value="'localhost:8080/event?id=' + ${evento.idEvento} + '&invitation=' + ${evento.invito}">
+<button th:if="${(isOwner && evento.visibilita == 0) || evento.visibilita == 1}" onclick="copyToClipboard(document.getElementById('linkInvito').value)">Copia link invito</button>
+
 </body>
 <script>
     const text = document.getElementById("like");
-    if(text.value === "true") {
+    if (text.value === "true") {
         text.value = "HAI MESSO MI PIACE";
     } else {
-        text.value= "NON HAI MESSO MI PIACE";
+        text.value = "NON HAI MESSO MI PIACE";
+    }
+
+    const text2 = document.getElementById("partecipa");
+    if (text2.value === "true") {
+        text2.value = "DISISCRIVITI";
+    } else {
+        text2.value = "ISCRIVITI";
+    }
+
+    function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+        }).catch(err => {
+            console.error("Failed to copy: ", err);
+        });
     }
 </script>
 </html>
