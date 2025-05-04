@@ -1,5 +1,6 @@
 package org.example.eventify.repository;
 
+import org.example.eventify.model.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,22 +11,9 @@ import java.util.List;
 import org.example.eventify.model.Followers;
 @Repository
 public interface FollowersRepository extends JpaRepository<Followers, Integer> {
-    @Query(nativeQuery = true, value = """
-        SELECT * 
-        FROM followers 
-        WHERE followed = :email
-    """)
-    List<Followers> findAllFollowersByFollowed(@Param("email") String email);
-    @Query(nativeQuery = true, value = """
-    SELECT COUNT(*) > 0 
-    FROM followers 
-    WHERE follower = :followerEmail AND followed = :followedEmail
-    """)
-    boolean isFollowing(@Param("followerEmail") String followerEmail, @Param("followedEmail") String followedEmail);
-    @Query(nativeQuery = true, value = """
-    SELECT * 
-    FROM followers 
-    WHERE follower = :followerEmail AND followed = :followedEmail
-    """)
-    Followers findByFollowerAndFollowed(@Param("followerEmail") String followerEmail, @Param("followedEmail") String followedEmail);
+    List<Followers> getFollowersByFollowed(Utente utente);
+    boolean existsByFollowerAndFollowed(Utente follower, Utente followed);
+    Followers findByFollowerAndFollowed(Utente follower, Utente followed);
+    Integer countAllByFollowed(Utente followed);
+    Integer countAllByFollower(Utente follower);
 }

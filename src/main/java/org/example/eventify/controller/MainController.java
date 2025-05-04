@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpSession;
 import org.example.eventify.model.Evento;
 import org.example.eventify.model.Utente;
@@ -36,16 +37,34 @@ public class MainController {
     @GetMapping("/home")
     public String homePage(HttpSession session, Model model, @RequestParam(required = false) String msg) {
         Utente utente = (Utente) session.getAttribute("user");
+
+        List<Utente> allUtenti = utenteService.findAll();
+        List<String> usernames = new ArrayList<>();
+
         if (utente != null) {
             model.addAttribute("utente", utente);
-            List<Integer> eventiHome = eventoService.getEventiOrderedByPopolarita();
+            List<Integer> eventiHome = eventoService.getEventiOrderedByPopolaritaOfFollowingUsers(utente.getEmail());
+            List<Integer> eventiHomeNotFollowing = eventoService.getEventiOrderedByPopolaritaOfNotFollowingUsers(utente.getEmail());
             List<Evento> eventiHomeObj = new ArrayList<>();
+
             for(Integer evento : eventiHome) {
                 Evento eventoObj = eventoService.findById(evento);
                 eventiHomeObj.add(eventoObj);
             }
+            for(Integer evento : eventiHomeNotFollowing) {
+                Evento eventoObj = eventoService.findById(evento);
+                eventiHomeObj.add(eventoObj);
+            }
+
+            for(Utente u : allUtenti) {
+                if (!u.getEmail().equals(utente.getEmail())) {
+                    usernames.add(u.getUsername());
+                }
+            }
+
             model.addAttribute("eventiHome", eventiHomeObj);
             model.addAttribute("msg", msg);
+            model.addAttribute("usernames", usernames);
             return "home";
         } else {
             return "redirect:/login";

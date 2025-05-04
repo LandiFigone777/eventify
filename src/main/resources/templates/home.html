@@ -12,7 +12,7 @@
 <form action="/exit" method="post">
     <input type="submit" value="Esci"/>
 </form>
-<h2>Eventi pubblici in ordine di popolarità</h2>
+<h2>Eventi pubblici in ordine prima di seguiti e poi di popolarità</h2>
 <h3 th:text="${msg}"></h3>
 <table>
     <thead>
@@ -39,5 +39,36 @@
     </tr>
     </tbody>
 </table>
+<br>
+<br>
+<br>
+<input type="text" id="filterInput" onkeyup="filter()" placeholder="Cerca per username..." />
+
+<ul id="resultsList">
+    <li th:each="username : ${usernames}" th:text="${username}"></li>
+</ul>
+
+<script>
+    const filterInput = document.getElementById('filterInput');
+    const resultsList = document.getElementById('resultsList');
+    const items = resultsList.getElementsByTagName('li');
+
+    function filter(){
+        const filterValue = filterInput.value.toLowerCase();
+
+        let a, txtValue;
+
+        for (let i = 0; i < items.length; i++) {
+            console.log(items.length);
+            a = items[i];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toLowerCase().indexOf(filterValue) > -1) {
+                a.style.display = "";
+            } else {
+                a.style.display = "none";
+            }
+        }
+    }
+</script>
 </body>
 </html>

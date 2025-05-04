@@ -14,12 +14,14 @@
 <p>Età minima: </p><p th:text="${evento.etaMinima}"></p><br>
 <p>Partecipanti massimi</p><p th:text="${evento.maxPartecipanti}"></p><br>
 <p>Costo ingresso: </p><p th:text="${evento.costoIngresso}"></p><br>
+
 <form method="post" action="/likeEvent">
-    <input type="submit" id="like" name="like" th:value="${liked}"><p th:text="${likesNumber} + ' like totali'"></p>
+    <input type="submit" id="like" name="like" th:value="${liked ? 'HAI MESSO MI PIACE' : 'NON HAI MESSO MI PIACE'}"><p th:text="${likesNumber} + ' like totali'"></p>
     <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
 </form>
+
 <form method="post" action="/subscribe">
-    <input type="submit" id="partecipa" name="partecipa" th:value="${partecipato}">
+    <input type="submit" id="partecipa" name="partecipa" th:value="${partecipato ? 'ISCRIVITI' : 'DISISCRIVITI'}">
     <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
 </form>
 
@@ -29,20 +31,6 @@
 
 </body>
 <script>
-    const text = document.getElementById("like");
-    if (text.value === "true") {
-        text.value = "HAI MESSO MI PIACE";
-    } else {
-        text.value = "NON HAI MESSO MI PIACE";
-    }
-
-    const text2 = document.getElementById("partecipa");
-    if (text2.value === "true") {
-        text2.value = "DISISCRIVITI";
-    } else {
-        text2.value = "ISCRIVITI";
-    }
-
     function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
         alert("Copied to clipboard!");

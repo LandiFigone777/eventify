@@ -1,5 +1,6 @@
 package org.example.eventify.service;
 
+import org.example.eventify.model.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.eventify.model.Followers;
@@ -28,16 +29,23 @@ public class FollowersService {
       followersRepository.delete(followers);
    }
 
-   public List<Followers> findAllFollowersByFollowed(String email) {
-      return followersRepository.findAllFollowersByFollowed(email);
+   public List<Followers> findAllFollowersByFollowed(Utente utente) {
+      return followersRepository.getFollowersByFollowed(utente);
    }
 
-   public boolean isFollowing(String followerEmail, String followedEmail) {
-      return followersRepository.isFollowing(followerEmail, followedEmail);
+   public boolean isFollowing(Utente follower, Utente followed) {
+      return followersRepository.existsByFollowerAndFollowed(follower, followed);
    }
 
-   public Followers findByFollowerAndFollowed(String followerEmail, String followedEmail) {
-      return followersRepository.findByFollowerAndFollowed(followerEmail, followedEmail);
+   public Followers findByFollowerAndFollowed(Utente follower, Utente followed) {
+      return followersRepository.findByFollowerAndFollowed(follower, followed);
    }
 
+   public Integer followersNumber(Utente followed) {
+      return followersRepository.countAllByFollowed(followed);
+   }
+
+    public Integer followingNumber(Utente follower) {
+        return followersRepository.countAllByFollower(follower);
+    }
 }

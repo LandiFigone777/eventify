@@ -30,24 +30,25 @@ public class UtenteController {
             return "redirect:/home?msg=Utente non trovato";
         }
 
-        Utente currentUser = (Utente) session.getAttribute("user");
-        boolean isFollowing = false;
-        if (currentUser != null) {
-            isFollowing = followersService.isFollowing(currentUser.getEmail(), utente.getEmail());
+        boolean isFollowing;
+        if (loggedUser != null) {
+            isFollowing = followersService.isFollowing(loggedUser, utente);
+        }
+        else {
+            return "redirect:/login";
         }
 
         model.addAttribute("utente", utente);
         model.addAttribute("isFollowing", isFollowing);
-        if (loggedUser == null) {
+        model.addAttribute("followersNumber", followersService.followersNumber(utente));
+        model.addAttribute("followingNumber", followersService.followingNumber(utente));
+
+        if (loggedUser.getEmail().equals(utente.getEmail())) {
+            model.addAttribute("eventi", eventoService.getByOrganizzatore(utente));
+        } else {
             model.addAttribute("eventi", eventoService.getPublicEventsByOrganizzatore(utente));
-        }else {
-            if (loggedUser.getEmail().equals(utente.getEmail())) {
-                model.addAttribute("eventi", eventoService.getByOrganizzatore(utente));
-            } else {
-                model.addAttribute("eventi", eventoService.getPublicEventsByOrganizzatore(utente));
-            }
-        }  
-        
+        }
+
         return "user";
     }
 
@@ -63,19 +64,11 @@ public class UtenteController {
             return "redirect:/home?msg=Utente non trovato";
         }
 
-        Boolean isFollowing = followersService.isFollowing(currentUser.getEmail(), followed.getEmail());
+        boolean isFollowing = followersService.isFollowing(currentUser, followed);
 
-        // if (existingFollow != null) {
-        //     followersService.delete(existingFollow);
-        // } else {
-        //     Followers newFollow = new Followers();
-        //     newFollow.setFollower(currentUser);
-        //     newFollow.setFollowed(followed);
-        //     followersService.save(newFollow);
-        // }
         if (isFollowing) {
             // Unfollow the user
-            Followers existingFollow = followersService.findByFollowerAndFollowed(currentUser.getEmail(), followed.getEmail());
+            Followers existingFollow = followersService.findByFollowerAndFollowed(currentUser, followed);
             if (existingFollow != null) {
                 followersService.delete(existingFollow);
             }

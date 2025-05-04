@@ -2,13 +2,10 @@ package org.example.eventify.service;
 
 import org.example.eventify.model.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.example.eventify.model.Evento;
 import org.example.eventify.repository.EventoRepository;
 
-import java.lang.annotation.Native;
 import java.util.List;
 
 @Service
@@ -36,12 +33,16 @@ public class EventoService {
         return eventoRepository.getByOrganizzatore(utente);
     }
 
-    public List<Integer> getEventiOrderedByPopolarita() {
-        return eventoRepository.getEventiOrderedByPopolarita();
+    public List<Integer> getEventiOrderedByPopolaritaOfFollowingUsers(String utente) {
+        return eventoRepository.getEventiOrderedByPopolaritaOfFollowingUsers(utente);
+    }
+
+    public List<Integer> getEventiOrderedByPopolaritaOfNotFollowingUsers(String utente) {
+        return eventoRepository.getEventiOrderedByPopolaritaOfNotFollowingUsers(utente);
     }
 
    public List<Evento> getPublicEventsByOrganizzatore(Utente organizzatore) {
-      return eventoRepository.findPublicEventsByOrganizzatore(organizzatore.getEmail());
+      return eventoRepository.findByOrganizzatoreAndVisibilita(organizzatore, 1);
    }
 
     public boolean existsByInvito(String invito) {
