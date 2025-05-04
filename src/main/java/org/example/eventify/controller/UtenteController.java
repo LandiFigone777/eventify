@@ -33,8 +33,7 @@ public class UtenteController {
         Utente currentUser = (Utente) session.getAttribute("user");
         boolean isFollowing = false;
         if (currentUser != null) {
-            isFollowing = followersService.findAll().stream()
-                .anyMatch(f -> f.getFollower().equals(currentUser) && f.getFollowed().equals(utente));
+            isFollowing = followersService.isFollowing(currentUser.getEmail(), utente.getEmail());
         }
 
         model.addAttribute("utente", utente);
@@ -64,14 +63,24 @@ public class UtenteController {
             return "redirect:/home?msg=Utente non trovato";
         }
 
-        Followers existingFollow = followersService.findAll().stream()
-            .filter(f -> f.getFollower().equals(currentUser) && f.getFollowed().equals(followed))
-            .findFirst()
-            .orElse(null);
+        Boolean isFollowing = followersService.isFollowing(currentUser.getEmail(), followed.getEmail());
 
-        if (existingFollow != null) {
-            followersService.delete(existingFollow);
+        // if (existingFollow != null) {
+        //     followersService.delete(existingFollow);
+        // } else {
+        //     Followers newFollow = new Followers();
+        //     newFollow.setFollower(currentUser);
+        //     newFollow.setFollowed(followed);
+        //     followersService.save(newFollow);
+        // }
+        if (isFollowing) {
+            // Unfollow the user
+            Followers existingFollow = followersService.findByFollowerAndFollowed(currentUser.getEmail(), followed.getEmail());
+            if (existingFollow != null) {
+                followersService.delete(existingFollow);
+            }
         } else {
+            // Follow the user
             Followers newFollow = new Followers();
             newFollow.setFollower(currentUser);
             newFollow.setFollowed(followed);

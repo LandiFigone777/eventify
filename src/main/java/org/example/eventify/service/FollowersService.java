@@ -26,6 +26,18 @@ public class FollowersService {
 
    public void delete(Followers followers) {
       followersRepository.delete(followers);
-  }
+   }
+
+   public List<Followers> findAllFollowersByFollowed(String email) {
+      return followersRepository.findAllFollowersByFollowed(email);
+   }
+
+   public boolean isFollowing(String followerEmail, String followedEmail) {
+      return followersRepository.isFollowing(followerEmail, followedEmail);
+   }
+
+   public Followers findByFollowerAndFollowed(String followerEmail, String followedEmail) {
+      return followersRepository.findByFollowerAndFollowed(followerEmail, followedEmail);
+   }
 
 }
