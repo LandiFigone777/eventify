@@ -21,6 +21,7 @@ USE `eventify`;
 
 CREATE TABLE IF NOT EXISTS `utente` (
   `email` varchar(255) NOT NULL,
+  `username` varchar(255) DEFAULT NULL,
   `nome` varchar(255) DEFAULT NULL,
   `cognome` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,

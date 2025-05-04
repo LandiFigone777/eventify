@@ -23,6 +23,7 @@ import java.util.Date;
 public class Utente {
     @Id
     private String email;
+    private String username;
     private String password;
     private String nome;
     private String cognome;

@@ -24,4 +24,8 @@ public class FollowersService {
       return followersRepository.save(followers);
    }
 
+   public void delete(Followers followers) {
+      followersRepository.delete(followers);
+  }
+
 }

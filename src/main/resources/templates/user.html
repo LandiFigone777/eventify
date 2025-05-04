@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Profilo di ' + ${utente.username}">Profilo Utente</title>
+</head>
+<body>
+    <h1 th:text="'Profilo di ' + ${utente.username}">Profilo Utente</h1>
+    <p><strong>Nome:</strong> <span th:text="${utente.nome}">Nome</span></p>
+    <p><strong>Cognome:</strong> <span th:text="${utente.cognome}">Cognome</span></p>
+    <p><strong>Città:</strong> <span th:text="${utente.citta}">Città</span></p>
+
+    <form action="/follow" method="post">
+        <input type="hidden" name="followedEmail" th:value="${utente.email}" />
+        <button type="submit" th:text="${isFollowing ? 'Smetti di seguire' : 'Segui'}"></button>
+    </form>
+
+    <h2>Eventi creati da <span th:text="${utente.username}"></span></h2>
+    <ul>
+        <li th:each="evento : ${eventi}">
+            <a th:href="@{/event(id=${evento.idEvento})}" th:text="${evento.nome}"></a>
+        </li>
+    </ul>
+</body>
+</html>
