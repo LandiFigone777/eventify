@@ -19,5 +19,10 @@ public interface EventoRepository extends JpaRepository<Evento, Integer> {
             GROUP BY evento.id_evento
             ORDER BY COUNT(eventi_preferiti.id_evento) DESC""")
     List<Integer> getEventiOrderedByPopolarita();
+    @Query(nativeQuery = true, value = """
+        SELECT * FROM evento
+        WHERE evento.visibilita = 1 AND evento.creatore = :organizzatoreEmail
+        """)
+    List<Evento> findPublicEventsByOrganizzatore(String organizzatoreEmail);
     Boolean existsByInvito(String invito);
 }

@@ -25,7 +25,7 @@ public class UtenteController {
     @GetMapping("/user/{username}")
     public String getUserProfile(@PathVariable String username, Model model, HttpSession session) {
         Utente utente = utenteService.findByUsername(username);
-
+        Utente loggedUser = (Utente) session.getAttribute("user");
         if (utente == null) {
             return "redirect:/home?msg=Utente non trovato";
         }
@@ -39,36 +39,45 @@ public class UtenteController {
 
         model.addAttribute("utente", utente);
         model.addAttribute("isFollowing", isFollowing);
-        model.addAttribute("eventi", eventoService.getByOrganizzatore(utente));
+        if (loggedUser == null) {
+            model.addAttribute("eventi", eventoService.getPublicEventsByOrganizzatore(utente));
+        }else {
+            if (loggedUser.getEmail().equals(utente.getEmail())) {
+                model.addAttribute("eventi", eventoService.getByOrganizzatore(utente));
+            } else {
+                model.addAttribute("eventi", eventoService.getPublicEventsByOrganizzatore(utente));
+            }
+        }  
+        
         return "user";
     }
 
-@PostMapping("/follow")
-public String followUser(@RequestParam String followedEmail, HttpSession session) {
-    Utente currentUser = (Utente) session.getAttribute("user");
-    if (currentUser == null) {
-        return "redirect:/login";
-    }
+    @PostMapping("/follow")
+    public String followUser(@RequestParam String followedEmail, HttpSession session) {
+        Utente currentUser = (Utente) session.getAttribute("user");
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
 
-    Utente followed = utenteService.findById(followedEmail);
-    if (followed == null) {
-        return "redirect:/home?msg=Utente non trovato";
-    }
+        Utente followed = utenteService.findById(followedEmail);
+        if (followed == null) {
+            return "redirect:/home?msg=Utente non trovato";
+        }
 
-    Followers existingFollow = followersService.findAll().stream()
-        .filter(f -> f.getFollower().equals(currentUser) && f.getFollowed().equals(followed))
-        .findFirst()
-        .orElse(null);
+        Followers existingFollow = followersService.findAll().stream()
+            .filter(f -> f.getFollower().equals(currentUser) && f.getFollowed().equals(followed))
+            .findFirst()
+            .orElse(null);
 
-    if (existingFollow != null) {
-        followersService.delete(existingFollow);
-    } else {
-        Followers newFollow = new Followers();
-        newFollow.setFollower(currentUser);
-        newFollow.setFollowed(followed);
-        followersService.save(newFollow);
-    }
+        if (existingFollow != null) {
+            followersService.delete(existingFollow);
+        } else {
+            Followers newFollow = new Followers();
+            newFollow.setFollower(currentUser);
+            newFollow.setFollowed(followed);
+            followersService.save(newFollow);
+        }
 
-    return "redirect:/user/" + followed.getUsername();
+        return "redirect:/user/" + followed.getUsername();
     }
 }

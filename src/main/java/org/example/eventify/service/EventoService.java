@@ -40,6 +40,10 @@ public class EventoService {
         return eventoRepository.getEventiOrderedByPopolarita();
     }
 
+   public List<Evento> getPublicEventsByOrganizzatore(Utente organizzatore) {
+      return eventoRepository.findPublicEventsByOrganizzatore(organizzatore.getEmail());
+   }
+
     public boolean existsByInvito(String invito) {
         return eventoRepository.existsByInvito(invito);
     }
