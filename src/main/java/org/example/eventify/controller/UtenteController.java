@@ -23,28 +23,25 @@ public class UtenteController {
     private EventoService eventoService;
     
     @GetMapping("/user/{username}")
-public String getUserProfile(@PathVariable String username, Model model, HttpSession session) {
-    Utente utente = utenteService.findAll().stream()
-        .filter(u -> u.getUsername().equals(username))
-        .findFirst()
-        .orElse(null);
+    public String getUserProfile(@PathVariable String username, Model model, HttpSession session) {
+        Utente utente = utenteService.findByUsername(username);
 
-    if (utente == null) {
-        return "redirect:/home?msg=Utente non trovato";
+        if (utente == null) {
+            return "redirect:/home?msg=Utente non trovato";
+        }
+
+        Utente currentUser = (Utente) session.getAttribute("user");
+        boolean isFollowing = false;
+        if (currentUser != null) {
+            isFollowing = followersService.findAll().stream()
+                .anyMatch(f -> f.getFollower().equals(currentUser) && f.getFollowed().equals(utente));
+        }
+
+        model.addAttribute("utente", utente);
+        model.addAttribute("isFollowing", isFollowing);
+        model.addAttribute("eventi", eventoService.getByOrganizzatore(utente));
+        return "user";
     }
-
-    Utente currentUser = (Utente) session.getAttribute("user");
-    boolean isFollowing = false;
-    if (currentUser != null) {
-        isFollowing = followersService.findAll().stream()
-            .anyMatch(f -> f.getFollower().equals(currentUser) && f.getFollowed().equals(utente));
-    }
-
-    model.addAttribute("utente", utente);
-    model.addAttribute("isFollowing", isFollowing);
-    model.addAttribute("eventi", eventoService.getByOrganizzatore(utente));
-    return "user";
-}
 
 @PostMapping("/follow")
 public String followUser(@RequestParam String followedEmail, HttpSession session) {
