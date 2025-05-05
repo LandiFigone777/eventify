@@ -8,7 +8,8 @@
 <p>sei nella home</p>
 <a href="addEvent">Inserisci nuovo evento</a><br>
 <a href="yourEvents">I tuoi eventi creati</a><br>
-<a href="subscriptions">Gli eventi a cui sei iscritto</a>
+<a href="subscriptions">Gli eventi a cui sei iscritto</a><br>
+<a href="userSearch">Ricerca utenti</a>
 <form action="/exit" method="post">
     <input type="submit" value="Esci"/>
 </form>
@@ -42,33 +43,5 @@
 <br>
 <br>
 <br>
-<input type="text" id="filterInput" onkeyup="filter()" placeholder="Cerca per username..." />
-
-<ul id="resultsList">
-    <li th:each="username : ${usernames}" th:text="${username}"></li>
-</ul>
-
-<script>
-    const filterInput = document.getElementById('filterInput');
-    const resultsList = document.getElementById('resultsList');
-    const items = resultsList.getElementsByTagName('li');
-
-    function filter(){
-        const filterValue = filterInput.value.toLowerCase();
-
-        let a, txtValue;
-
-        for (let i = 0; i < items.length; i++) {
-            console.log(items.length);
-            a = items[i];
-            txtValue = a.textContent || a.innerText;
-            if (txtValue.toLowerCase().indexOf(filterValue) > -1) {
-                a.style.display = "";
-            } else {
-                a.style.display = "none";
-            }
-        }
-    }
-</script>
 </body>
 </html>

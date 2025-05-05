@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class UtenteController {
     @Autowired
@@ -81,5 +84,65 @@ public class UtenteController {
         }
 
         return "redirect:/user/" + followed.getUsername();
+    }
+
+    @GetMapping("/user/{username}/followers")
+    public String getFollowers(@PathVariable String username, Model model) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            return "redirect:/home?msg=Utente non trovato";
+        }
+
+        List<Followers> followersList = followersService.findAllFollowersByFollowed(utente);
+        List<Utente> followersListModel = new ArrayList<>();
+
+        for(Followers follower : followersList) {
+            Utente followerUser = utenteService.findById(follower.getFollower().getEmail());
+            followersListModel.add(followerUser);
+        }
+
+        model.addAttribute("followers", followersListModel);
+
+        return "followers";
+    }
+
+    @GetMapping("/user/{username}/following")
+    public String getFollowing(@PathVariable String username, Model model) {
+        Utente utente = utenteService.findByUsername(username);
+        if (utente == null) {
+            return "redirect:/home?msg=Utente non trovato";
+        }
+
+        List<Followers> followingList = followersService.findAllFollowersByFollowing(utente);
+        List<Utente> followingListModel = new ArrayList<>();
+
+        for(Followers following : followingList) {
+            Utente followingUser = utenteService.findById(following.getFollowed().getEmail());
+            followingListModel.add(followingUser);
+        }
+
+        model.addAttribute("following", followingListModel);
+
+        return "following";
+    }
+
+    @GetMapping("/userSearch")
+    public String searchUser(Model model, HttpSession session) {
+        Utente loggedUser = (Utente) session.getAttribute("user");
+        if (loggedUser == null) {
+            return "redirect:/login";
+        }
+
+        List<Utente> allUtenti = utenteService.findAll();
+        List<String> filteredUtenti = new ArrayList<>();
+
+        for (Utente utente : allUtenti) {
+            if (!utente.getEmail().equals(loggedUser.getEmail())) {
+                filteredUtenti.add(utente.getUsername());
+            }
+        }
+
+        model.addAttribute("usernames", filteredUtenti);
+        return "userSearch";
     }
 }

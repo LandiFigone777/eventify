@@ -12,6 +12,7 @@ import org.example.eventify.model.Followers;
 @Repository
 public interface FollowersRepository extends JpaRepository<Followers, Integer> {
     List<Followers> getFollowersByFollowed(Utente utente);
+    List<Followers> getFollowersByFollower(Utente utente);
     boolean existsByFollowerAndFollowed(Utente follower, Utente followed);
     Followers findByFollowerAndFollowed(Utente follower, Utente followed);
     Integer countAllByFollowed(Utente followed);

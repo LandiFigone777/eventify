@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ricerca utenti</title>
+</head>
+<body>
+<input type="text" id="filterInput" onkeyup="filter()" placeholder="Cerca per username..." />
+
+<ul id="resultsList">
+    <li th:each="username : ${usernames}"><a th:href="'user/' + ${username}" th:text="${username}"></a></li>
+</ul>
+
+<script>
+    const filterInput = document.getElementById('filterInput');
+    const resultsList = document.getElementById('resultsList');
+    const items = resultsList.getElementsByTagName('li');
+
+    function filter(){
+        const filterValue = filterInput.value.toLowerCase();
+
+        let a, txtValue;
+
+        for (let i = 0; i < items.length; i++) {
+            console.log(items.length);
+            a = items[i];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toLowerCase().indexOf(filterValue) > -1) {
+                a.style.display = "";
+            } else {
+                a.style.display = "none";
+            }
+        }
+    }
+</script>
+</body>
+</html>

@@ -33,6 +33,10 @@ public class FollowersService {
       return followersRepository.getFollowersByFollowed(utente);
    }
 
+   public List<Followers> findAllFollowersByFollowing(Utente utente) {
+      return followersRepository.getFollowersByFollower(utente);
+   }
+
    public boolean isFollowing(Utente follower, Utente followed) {
       return followersRepository.existsByFollowerAndFollowed(follower, followed);
    }

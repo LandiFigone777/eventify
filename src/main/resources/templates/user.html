@@ -10,8 +10,8 @@
     <p><strong>Cognome:</strong> <span th:text="${utente.cognome}">Cognome</span></p>
     <p><strong>Città:</strong> <span th:text="${utente.citta}">Città</span></p>
 
-    <p th:text="'followers: ' + ${followersNumber}"></p>
-    <p th:text="'seguiti: ' + ${followingNumber}"></p>
+    <a th:text="'followers: ' + ${followersNumber}" th:href="'/user/' + ${utente.username} + '/followers'"></a>
+    <a th:text="'seguiti: ' + ${followingNumber}" th:href="'/user/' + ${utente.username} + '/following'"></a>
 
     <form action="/follow" method="post">
         <input type="hidden" name="followedEmail" th:value="${utente.email}" />
