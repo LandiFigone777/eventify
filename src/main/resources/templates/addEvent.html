@@ -5,61 +5,25 @@
     <title>Aggiungi evento</title>
 </head>
 <body>
-<form action="addEvent" method="post" enctype="multipart/form-data">
-    <input type="text" id="nome" name="nome" placeholder="nome evento">
-    <input type="datetime-local" id="dataOraInizio" name="dataOraInizio" placeholder="data e ora inizio">
-    <input type="datetime-local" id="dataOraFine" name="dataOraFine" placeholder="data e ora fine">
-    <input type="text" id="indirizzo" name="indirizzo" oninput="autocompleteAddress()" placeholder="Inserisci indirizzo..."/>
-    <input type="number" id="numCivico" name="numCivico" placeholder="numero civico">
-    <input type="text" id="tipo" name="tipo" placeholder="tipo (festa, sagra ecc...)">
-    <select name="visibilita" id="visibilita">
-        <option value="pubblico">Pubblico</option>
-        <option value="privato">Privato</option>
-    </select>
-    <input type="text" id="descrizione" name="descrizione" placeholder="descrizione">
-    <input type="number" id="etaMinima" name="etaMinima" placeholder="eta minima">
-    <input type="number" id="maxPartecipanti" name="maxPartecipanti" placeholder="partecipanti max">
-    <input type="text" id="costoIngresso" name="costoIngresso" placeholder="costo ingresso">
-    <input type="file" id="immagini" name="immagini" multiple>
-    <input type="submit" placeholder="salva evento">
-    <select id="suggestions" style="display: none;"></select>
-    <script>
-        let timeout = null;
-
-        function autocompleteAddress() {
-            clearTimeout(timeout);
-            timeout = setTimeout(async () => {
-                const input = document.getElementById('indirizzo').value;
-                input.replaceAll(' ', '%20');
-
-                const response = await fetch(`/api/places/osm-autocomplete?query=${encodeURIComponent(input)}`);
-                const suggestions = await response.json();
-
-                const list = document.getElementById('suggestions');
-                list.innerHTML = '';
-                if(list.innerHTML === '') {
-                    list.style.display = 'none';
-                } else {
-                    list.style.display = 'block';
-                }
-                suggestions.forEach(item => {
-                    const li = document.createElement('option');
-                    li.text = item.displayName;
-                    li.value = item.displayName;
-                    if(list.innerHTML === '') {
-                        list.style.display = 'none';
-                    } else {
-                        list.style.display = 'block';
-                    }
-                    li.onclick = () => {
-                        document.getElementById('indirizzo').value = item.displayName;
-                        list.innerHTML = '';
-                    };
-                    list.appendChild(li);
-                });
-            }, 300);
-        }
-    </script>
-</form>
+    <form action="addEvent" method="post" enctype="multipart/form-data">
+        <input type="text" id="nome" name="nome" placeholder="nome evento">
+        <input type="datetime-local" id="dataOraInizio" name="dataOraInizio" placeholder="data e ora inizio">
+        <input type="datetime-local" id="dataOraFine" name="dataOraFine" placeholder="data e ora fine">
+        <input type="text" id="indirizzo" name="indirizzo" oninput="autocompleteAddress()" placeholder="Inserisci indirizzo..."/>
+        <input type="number" id="numCivico" name="numCivico" placeholder="numero civico">
+        <input type="text" id="tipo" name="tipo" placeholder="tipo (festa, sagra ecc...)">
+        <select name="visibilita" id="visibilita">
+            <option value="pubblico">Pubblico</option>
+            <option value="privato">Privato</option>
+        </select>
+        <input type="text" id="descrizione" name="descrizione" placeholder="descrizione">
+        <input type="number" id="etaMinima" name="etaMinima" placeholder="eta minima">
+        <input type="number" id="maxPartecipanti" name="maxPartecipanti" placeholder="partecipanti max">
+        <input type="text" id="costoIngresso" name="costoIngresso" placeholder="costo ingresso">
+        <input type="file" id="immagini" name="immagini" multiple>
+        <input type="submit" placeholder="salva evento">
+        <select id="suggestions" style="display: none;"></select>
+    </form>
+    <script src="/trovaInidirzzo.js"></script>
 </body>
 </html>

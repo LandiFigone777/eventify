@@ -7,21 +7,19 @@ xmlns:th="http://www.thymeleaf.org">
 </head>
 <body>
 <h1>Registrati</h1>
-    <form method="post" action="/register" th:object="${utente}">
+    <form method="post" action="/register">
         <input type="text" name="nome" id="nome" placeholder="nome">
         <input type="text" name="cognome" id="cognome" placeholder="cognome">
         <input type="text" name="username" id="username" placeholder="username">
         <input type="date" name="dataNascita" id="dataNascita" placeholder="data nascita">
-        <input type="text" name="stato" id="stato" placeholder="stato">
-        <input type="text" name="citta" id="citta" placeholder="città">
-        <input type="text" name="via" id="via" placeholder="via">
-        <input type="text" name="numeroCivico" id="numeroCivico" placeholder="civico">
-        <input type="text" name="cap" id="cap" placeholder="cap">
+        <input type="text" name="indirizzo" id="indirizzo" oninput="autocompleteAddress()" placeholder="indirizzo">
         <input type="text" name="email" id="email" placeholder="email">
         <input type="password" name="password" id="password" placeholder="password">
         <input type="password" name="confirmPassword" id="confirmPassword" placeholder="confirm password">
         <input type="submit" value="Registrati">
     </form>
+    <select id="suggestions" style="display: none;"></select>
+    <p>Hai già un account? <a href="login">Login</a></p>
+    <script src="/trovaInidirzzo.js"></script>
 </body>
-<p>Hai già un account? <a href="login">Login</a></p>
 </html>

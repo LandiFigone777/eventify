@@ -3,6 +3,8 @@ package org.example.eventify;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Utils {
@@ -48,5 +50,15 @@ public class Utils {
         }
 
         return new String(uid);
+    }
+
+    // per futuri utilizzi ci sono delle cose da capire
+    public static List<String> viastringtolist(String viastring) {
+        List<String> list = new ArrayList<>();
+        String[] items = viastring.split(",");
+        for (String item : items) {
+            list.add(item.trim());
+        }
+        return list;
     }
 }

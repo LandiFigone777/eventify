@@ -30,9 +30,7 @@ public class Utente {
     @Column(name = "data_nascita")
     private LocalDate dataNascita;
     private String stato;
-    private String citta;
-    private String cap;
-    private String via;
+    private String indirizzo;
     @Column(name = "num_civico")
     private String numeroCivico;
     private String verificationCode;

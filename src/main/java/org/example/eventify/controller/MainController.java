@@ -1,6 +1,7 @@
 package org.example.eventify.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,26 +108,47 @@ public class MainController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute Utente utente, HttpSession session){
-        if(session.getAttribute("user") != null) {
-            return "redirect:/home";
-        }
-        try {
-            utente.setPassword(Utils.hashPassword(utente.getPassword()));
-        }
-        catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return "/register";
-        }
+public String register(
+        @RequestParam String nome,
+        @RequestParam String cognome,
+        @RequestParam String username,
+        @RequestParam String dataNascita,
+        @RequestParam String indirizzo,
+        @RequestParam String email,
+        @RequestParam String password,
+        @RequestParam String confirmPassword,
+        HttpSession session) {
+
+    if (session.getAttribute("user") != null) {
+        return "redirect:/home";
+    }
+
+    if (!password.equals(confirmPassword)) {
+        return "redirect:/register?error=PasswordMismatch";
+    }
+
+    try {
+        Utente utente = new Utente();
+        utente.setNome(nome);
+        utente.setCognome(cognome);
+        utente.setUsername(username);
+        utente.setDataNascita(LocalDate.parse(dataNascita));
+        utente.setIndirizzo(indirizzo);
+        utente.setEmail(email);
+        utente.setPassword(Utils.hashPassword(password));
 
         // Generate verification code
         String verificationCode = Utils.generateVerificationCode();
         utente.setVerificationCode(verificationCode);
 
         utenteService.save(utente); // Salva l'utente nel database
-        emailService.sendEmail(utente.getEmail(), "Registrazione completata", "La registrazione è avvenuta con successo! Il tuo codice di verifica è: " + verificationCode);
+        emailService.sendEmail(email, "Registrazione completata", "La registrazione è avvenuta con successo! Il tuo codice di verifica è: " + verificationCode);
         session.setAttribute("user", utente); // Salva l'utente nella sessione
-        return "redirect:/verify"; // Reindirizza alla pagina di login
+        return "redirect:/verify"; // Reindirizza alla pagina di verifica
+    } catch (Exception e) {
+        e.printStackTrace();
+        return "redirect:/register?error=Exception";
+    }
     }
 
     @GetMapping("/publicEvents")
@@ -149,7 +171,7 @@ public class MainController {
         System.out.println("User verification code: " + ((Utente) session.getAttribute("user")).getVerificationCode());
         if(((Utente) session.getAttribute("user")).getVerificationCode().equals(code)) {
             Utente utente = (Utente) session.getAttribute("user");
-            utente.setStato("VERIFICATO");
+            utente.setStato("VERIFICATO"); // ma quindi lo stato non è da dove viene? ma è uno stato
             utenteService.save(utente);
             return "redirect:/home";
         } else {
