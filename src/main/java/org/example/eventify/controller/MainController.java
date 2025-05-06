@@ -109,47 +109,56 @@ public class MainController {
     }
 
     @PostMapping("/register")
-public String register(
-        @RequestParam String nome,
-        @RequestParam String cognome,
-        @RequestParam String username,
-        @RequestParam String dataNascita,
-        @RequestParam String indirizzo,
-        @RequestParam String email,
-        @RequestParam String password,
-        @RequestParam String confirmPassword,
-        HttpSession session) {
+    public String register(
+            @RequestParam String nome,
+            @RequestParam String cognome,
+            @RequestParam String username,
+            @RequestParam String dataNascita,
+            @RequestParam String indirizzo,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String confirmPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
-    if (session.getAttribute("user") != null) {
-        return "redirect:/home";
-    }
+        if (session.getAttribute("user") != null) {
+            redirectAttributes.addFlashAttribute("msg", "Sei già loggato");
+            return "redirect:/home";
+        }
 
-    if (!password.equals(confirmPassword)) {
-        return "redirect:/register?error=PasswordMismatch";
-    }
+        if (!password.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("msg", "Passwords do not match");
+            return "redirect:/register?error=PasswordMismatch";
+        }
 
-    try {
-        Utente utente = new Utente();
-        utente.setNome(nome);
-        utente.setCognome(cognome);
-        utente.setUsername(username);
-        utente.setDataNascita(LocalDate.parse(dataNascita));
-        utente.setIndirizzo(indirizzo);
-        utente.setEmail(email);
-        utente.setPassword(Utils.hashPassword(password));
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) { // Controllo validità email
+            redirectAttributes.addFlashAttribute("msg", "Email non valida");
+            return "redirect:/register";
+        }
 
-        // Generate verification code
-        String verificationCode = Utils.generateVerificationCode();
-        utente.setVerificationCode(verificationCode);
+        try {
+            Utente utente = new Utente();
+            utente.setNome(nome);
+            utente.setCognome(cognome);
+            utente.setUsername(username);
+            utente.setDataNascita(LocalDate.parse(dataNascita));
+            utente.setIndirizzo(indirizzo);
+            utente.setEmail(email);
+            utente.setPassword(Utils.hashPassword(password));
 
-        utenteService.save(utente); // Salva l'utente nel database
-        emailService.sendEmail(email, "Registrazione completata", "La registrazione è avvenuta con successo! Il tuo codice di verifica è: " + verificationCode);
-        session.setAttribute("user", utente); // Salva l'utente nella sessione
-        return "redirect:/verify"; // Reindirizza alla pagina di verifica
-    } catch (Exception e) {
-        e.printStackTrace();
-        return "redirect:/register?error=Exception";
-    }
+            // Generate verification code
+            String verificationCode = Utils.generateVerificationCode();
+            utente.setVerificationCode(verificationCode);
+
+            utenteService.save(utente); // Salva l'utente nel database
+            emailService.sendEmail(email, "Registrazione completata", "La registrazione è avvenuta con successo! Il tuo codice di verifica è: " + verificationCode);
+            session.setAttribute("user", utente); // Salva l'utente nella sessione
+            return "redirect:/verify"; // Reindirizza alla pagina di verifica
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("msg", "Errore nelle credenziali, l'email o il nome utente sono già in uso"); //facciamo vago per evitare di dare troppe info
+            return "redirect:/register?error=Exception";
+        }
     }
 
     @GetMapping("/publicEvents")
@@ -176,7 +185,7 @@ public String register(
             utenteService.save(utente);
             return "redirect:/home";
         } else {
-            redirectAttributes.addAttribute("msg", "Codice di verifica errato");
+            redirectAttributes.addFlashAttribute("msg", "Codice di verifica errato");
             return "redirect:/verify";
         }
 

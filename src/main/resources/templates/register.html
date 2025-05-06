@@ -4,6 +4,7 @@ xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Registrati</title>
+    <link rel="stylesheet" href="/toast.css">
 </head>
 <body>
 <h1>Registrati</h1>
@@ -20,6 +21,11 @@ xmlns:th="http://www.thymeleaf.org">
     </form>
     <select id="suggestions" style="display: none;"></select>
     <p>Hai già un account? <a href="login">Login</a></p>
+    <div id="toast" class="toast" 
+        th:if="${msg}" 
+        th:text="${msg}">
+    </div>
+    <script src="/toast.js"></script>
     <script src="/trovaInidirzzo.js"></script>
 </body>
 </html>
