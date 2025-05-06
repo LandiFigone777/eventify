@@ -2,14 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="/toast.css">
 </head>
 <body>
-<form action="/login" method="post">
-    <input type="text" placeholder="email" name="emailLogin" id="emailLogin">
-    <input type="password" placeholder="password" name="passwordLogin" id="passwordLogin">
-    <input type="submit" value="Login">
-</form>
-<p>Non hai un account? <a href="register">Registrati</a></p>
+    <form action="/login" method="post">
+        <input type="text" placeholder="email" name="emailLogin" id="emailLogin">
+        <input type="password" placeholder="password" name="passwordLogin" id="passwordLogin">
+        <input type="submit" value="Login">
+    </form>
+    <p>Non hai un account? <a href="register">Registrati</a></p>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" 
+        th:if="${msg}" 
+        th:text="${msg}">
+    </div>
+
+    <script src="/toast.js"></script>
 </body>
 </html>

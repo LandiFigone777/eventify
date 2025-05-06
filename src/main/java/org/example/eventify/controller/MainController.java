@@ -89,13 +89,14 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String emailLogin, @RequestParam String passwordLogin, HttpSession session, RedirectAttributes redirectAttributes) throws NoSuchAlgorithmException {
+    public String login(Model model,@RequestParam String emailLogin, @RequestParam String passwordLogin, HttpSession session, RedirectAttributes redirectAttributes) throws NoSuchAlgorithmException {
         Utente foundUtente = utenteService.findById(emailLogin);
         if (foundUtente != null && foundUtente.getPassword().equals(Utils.hashPassword(passwordLogin))) {
             session.setAttribute("user", foundUtente);
             return "redirect:/home";
         } else {
-            redirectAttributes.addAttribute("msg", "Email o password errati");
+            redirectAttributes.addFlashAttribute("msg", "Email o password errati");
+            // redirectAttributes.addAttribute("msg", "Email o password errati");
             return "redirect:/login";
         }
     }
