@@ -110,9 +110,10 @@ public class EventController {
     }
 
     @PostMapping("/subscribe")
-    public String subscribe(@RequestParam Integer idEvento, @RequestParam String partecipa, HttpSession session) {
+    public String subscribe(@RequestParam Integer idEvento, @RequestParam String partecipa, HttpSession session, RedirectAttributes redirectAttributes) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente == null) {
+            redirectAttributes.addFlashAttribute("msg", "Devi essere loggato per iscriverti ad un evento");
             return "redirect:/login";
         }
         Evento evento = eventoService.findById(idEvento);
@@ -121,16 +122,18 @@ public class EventController {
                 Partecipazione partecipazione = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente);
                 if(partecipazione != null) {
                     partecipazioneRepository.delete(partecipazione);
-                    return "redirect:/home?msg=Disiscrizione avvenuta con successo";
+                    redirectAttributes.addFlashAttribute("msg", "Disiscrizione avvenuta con successo");
                 }
             } else if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null) {
                 Partecipazione partecipazione = new Partecipazione();
                 partecipazione.setPartecipante(utente);
                 partecipazione.setEvento(evento);
                 partecipazioneService.save(partecipazione);
+                redirectAttributes.addFlashAttribute("msg", "Iscrizione avvenuta con successo");
             }
         }
-        return "redirect:/home?msg=Iscrizione avvenuta con successo";
+        
+        return "redirect:/event?id=" + idEvento;
     }
 
     @GetMapping("/subscriptions")

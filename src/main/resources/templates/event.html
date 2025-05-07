@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/toast.css">
     <title th:text="${evento.nome}"></title>
 </head>
 <body>
+    <div id="toast" class="toast" 
+        th:if="${msg}" 
+        th:text="${msg}">
+    </div>
+
+<script src="/toast.js"></script>
 <h1 th:text="${evento.nome}"></h1><br>
 <p>Data e ora inizio: </p><p th:text="${evento.dataOraInizio}"></p><br>
 <p>Data e ora fine: </p><p th:text="${evento.dataOraFine}"></p><br>
@@ -21,11 +28,11 @@
 </form>
 
 <form method="post" action="/subscribe">
-    <input type="submit" id="partecipa" name="partecipa" th:value="${partecipato ? 'ISCRIVITI' : 'DISISCRIVITI'}">
+    <input type="submit" id="partecipa" name="partecipa" th:value="${partecipato ? 'DISISCRIVITI' : 'ISCRIVITI'}">
     <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
 </form>
 
-<p th:text="'isOwner: ' + ${isOwner}"></p>
+<!-- <p th:text="'isOwner: ' + ${isOwner}"></p> -->
 <input id="linkInvito" type="hidden" th:value="'localhost:8080/event?id=' + ${evento.idEvento} + '&invitation=' + ${evento.invito}">
 <button th:if="${(isOwner && evento.visibilita == 0) || evento.visibilita == 1}" onclick="copyToClipboard(document.getElementById('linkInvito').value)">Copia link invito</button>
 

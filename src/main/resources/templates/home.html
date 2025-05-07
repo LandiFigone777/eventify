@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="/toast.css">
 </head>
 <body>
+<div id="toast" class="toast" 
+th:if="${msg}" 
+th:text="${msg}">
+</div>
 <p>sei nella home</p>
 <a href="addEvent">Inserisci nuovo evento</a><br>
 <a href="yourEvents">I tuoi eventi creati</a><br>
