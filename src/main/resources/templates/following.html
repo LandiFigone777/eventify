@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Utenti Seguiti</title>
 </head>
 <body>
 <table>
@@ -13,7 +13,9 @@
     </thead>
     <tbody>
     <tr th:each="user : ${following}">
-        <td th:text="${user.username}"></td>
+        <td>
+            <a th:text="${user.username}" th:href="'/user/' + ${user.username}"></a>
+        </td>
     </tr>
     </tbody>
 </table>

@@ -8,7 +8,6 @@
     <h1 th:text="'Profilo di ' + ${utente.username}">Profilo Utente</h1>
     <p><strong>Nome:</strong> <span th:text="${utente.nome}">Nome</span></p>
     <p><strong>Cognome:</strong> <span th:text="${utente.cognome}">Cognome</span></p>
-    <p><strong>Città:</strong> <span th:text="${utente.citta}">Città</span></p>
 
     <a th:text="'followers: ' + ${followersNumber}" th:href="'/user/' + ${utente.username} + '/followers'"></a>
     <a th:text="'seguiti: ' + ${followingNumber}" th:href="'/user/' + ${utente.username} + '/following'"></a>

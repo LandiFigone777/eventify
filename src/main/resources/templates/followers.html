@@ -2,20 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Follower</title>
 </head>
 <body>
-    <table>
-        <thead>
-        <tr>
-            <th>Username follower</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="follower : ${followers}">
-            <td th:text="${follower.username}"></td>
-        </tr>
-        </tbody>
-    </table>
+<table>
+    <thead>
+    <tr>
+        <th>Username follower</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="follower : ${followers}">
+        <td>
+            <a th:text="${follower.username}" th:href="'/user/' + ${follower.username}"></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
