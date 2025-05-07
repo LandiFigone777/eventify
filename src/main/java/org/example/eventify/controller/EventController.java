@@ -188,6 +188,7 @@ public class EventController {
                 return "redirect:/home";
             }
         }
+
         return "redirect:/login";
     }
 
@@ -256,7 +257,7 @@ public class EventController {
         } else {
             model.addAttribute("isOwner", false);
         }
-
+        model.addAttribute("organizzatore", evento.getOrganizzatore());
         model.addAttribute("likesNumber" , eventiPreferitiService.countAllByEvento(evento));
         return "event";
     }

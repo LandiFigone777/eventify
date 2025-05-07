@@ -12,6 +12,8 @@
 <div id="toast" class="toast" th:if="${msg}" th:text="${msg}"></div>
 <script src="/toast.js"></script>
 
+
+
 <h1 th:text="${evento.nome}">Nome Evento</h1><br>
 <p>Data e ora inizio: <span th:text="${evento.dataOraInizio}"></span></p><br>
 <p>Data e ora fine: <span th:text="${evento.dataOraFine}"></span></p><br>
@@ -21,6 +23,8 @@
 <p>Età minima: <span th:text="${evento.etaMinima}"></span></p><br>
 <p>Partecipanti massimi: <span th:text="${evento.maxPartecipanti}"></span></p><br>
 <p>Costo ingresso: <span th:text="${evento.costoIngresso}"></span></p><br>
+<a th:href="'/user/' + ${organizzatore.username}" th:text="${organizzatore.username}"></a>
+<br>
 
 <!-- Blocchi HTMX -->
 <div th:replace="fragments/like :: like"></div>
