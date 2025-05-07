@@ -1,49 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <title th:text="${evento.nome}">Evento</title>
     <link rel="stylesheet" href="/toast.css">
-    <title th:text="${evento.nome}"></title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </head>
 <body>
-    <div id="toast" class="toast" 
-        th:if="${msg}" 
-        th:text="${msg}">
-    </div>
 
+<!-- Toast per messaggi -->
+<div id="toast" class="toast" th:if="${msg}" th:text="${msg}"></div>
 <script src="/toast.js"></script>
-<h1 th:text="${evento.nome}"></h1><br>
-<p>Data e ora inizio: </p><p th:text="${evento.dataOraInizio}"></p><br>
-<p>Data e ora fine: </p><p th:text="${evento.dataOraFine}"></p><br>
-<p>Indirizzo: </p><p th:text="${evento.indirizzo}"></p><br>
-<p>Tipo evento: </p><p th:text="${evento.tipo}"></p><br>
-<p>Descrizione: </p><p th:text="${evento.descrizione}"></p><br>
-<p>Età minima: </p><p th:text="${evento.etaMinima}"></p><br>
-<p>Partecipanti massimi</p><p th:text="${evento.maxPartecipanti}"></p><br>
-<p>Costo ingresso: </p><p th:text="${evento.costoIngresso}"></p><br>
 
-<form method="post" action="/likeEvent">
-    <input type="submit" id="like" name="like" th:value="${liked ? 'HAI MESSO MI PIACE' : 'NON HAI MESSO MI PIACE'}"><p th:text="${likesNumber} + ' like totali'"></p>
-    <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
-</form>
+<h1 th:text="${evento.nome}">Nome Evento</h1><br>
+<p>Data e ora inizio: <span th:text="${evento.dataOraInizio}"></span></p><br>
+<p>Data e ora fine: <span th:text="${evento.dataOraFine}"></span></p><br>
+<p>Indirizzo: <span th:text="${evento.indirizzo}"></span></p><br>
+<p>Tipo evento: <span th:text="${evento.tipo}"></span></p><br>
+<p>Descrizione: <span th:text="${evento.descrizione}"></span></p><br>
+<p>Età minima: <span th:text="${evento.etaMinima}"></span></p><br>
+<p>Partecipanti massimi: <span th:text="${evento.maxPartecipanti}"></span></p><br>
+<p>Costo ingresso: <span th:text="${evento.costoIngresso}"></span></p><br>
 
-<form method="post" action="/subscribe">
-    <input type="submit" id="partecipa" name="partecipa" th:value="${partecipato ? 'DISISCRIVITI' : 'ISCRIVITI'}">
-    <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
-</form>
+<!-- Blocchi HTMX -->
+<div th:replace="fragments/like :: like"></div>
+<div th:replace="fragments/subscribe :: subscribe"></div>
 
-<!-- <p th:text="'isOwner: ' + ${isOwner}"></p> -->
+<!-- Link invito -->
 <input id="linkInvito" type="hidden" th:value="'localhost:8080/event?id=' + ${evento.idEvento} + '&invitation=' + ${evento.invito}">
-<button th:if="${(isOwner && evento.visibilita == 0) || evento.visibilita == 1}" onclick="copyToClipboard(document.getElementById('linkInvito').value)">Copia link invito</button>
+<button th:if="${(isOwner && evento.visibilita == 0) || evento.visibilita == 1}"
+        onclick="copyToClipboard(document.getElementById('linkInvito').value)">
+    Copia link invito
+</button>
 
-</body>
 <script>
     function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Copied to clipboard!");
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Copied to clipboard!");
         }).catch(err => {
             console.error("Failed to copy: ", err);
         });
     }
 </script>
+
+</body>
 </html>

@@ -110,30 +110,30 @@ public class EventController {
     }
 
     @PostMapping("/subscribe")
-    public String subscribe(@RequestParam Integer idEvento, @RequestParam String partecipa, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String subscribe(@RequestParam Integer idEvento, @RequestParam String partecipa, HttpSession session, Model model) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente == null) {
-            redirectAttributes.addFlashAttribute("msg", "Devi essere loggato per iscriverti ad un evento");
             return "redirect:/login";
         }
         Evento evento = eventoService.findById(idEvento);
         if (evento != null) {
-            if(partecipa.equals("DISISCRIVITI")) {
+            if (partecipa.equals("DISISCRIVITI")) {
                 Partecipazione partecipazione = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente);
-                if(partecipazione != null) {
+                if (partecipazione != null) {
                     partecipazioneRepository.delete(partecipazione);
-                    redirectAttributes.addFlashAttribute("msg", "Disiscrizione avvenuta con successo");
                 }
-            } else if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null) {
+            } else if (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null) {
                 Partecipazione partecipazione = new Partecipazione();
                 partecipazione.setPartecipante(utente);
                 partecipazione.setEvento(evento);
                 partecipazioneService.save(partecipazione);
-                redirectAttributes.addFlashAttribute("msg", "Iscrizione avvenuta con successo");
             }
+            // Aggiungi la variabile 'partecipato' al modello
+            boolean partecipato = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null;
+            model.addAttribute("partecipato", partecipato);
+            model.addAttribute("evento", evento);
         }
-        
-        return "redirect:/event?id=" + idEvento;
+        return "fragments/subscribe :: subscribe";
     }
 
     @GetMapping("/subscriptions")
@@ -192,7 +192,7 @@ public class EventController {
     }
 
     @PostMapping("/likeEvent")
-    public String likeEvent(@RequestParam Integer idEvento, @RequestParam String like, HttpSession session) {
+    public String likeEvent(@RequestParam Integer idEvento, @RequestParam String like, HttpSession session, Model model) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente == null) {
             return "redirect:/login";
@@ -204,12 +204,17 @@ public class EventController {
                 likeEvento.setLiker(utente);
                 likeEvento.setEvento(evento);
                 eventiPreferitiService.save(likeEvento);
+                model.addAttribute("liked", true);
             } else {
                 EventiPreferiti likeEvento = eventiPreferitiService.getByLikerAndEvento(utente, evento);
                 eventiPreferitiService.delete(likeEvento);
+                model.addAttribute("liked", false);
             }
+            // Add the evento object to the model
+            model.addAttribute("evento", evento);
+            model.addAttribute("likesNumber" , eventiPreferitiService.countAllByEvento(evento));
         }
-        return "redirect:/event?id=" + idEvento;
+        return "fragments/like :: like";
     }
 
     public void addImages(List<MultipartFile> immagini, Evento evento){

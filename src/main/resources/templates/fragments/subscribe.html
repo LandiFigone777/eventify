@@ -1,0 +1,10 @@
+<div th:fragment="subscribe">
+    <form id="subscribe-container"
+        hx-post="/subscribe"
+        hx-include="[name='idEvento']"
+        hx-target="#subscribe-container"
+        hx-swap="outerHTML">
+        <input type="submit" id="partecipa" name="partecipa" th:value="${partecipato ? 'DISISCRIVITI' : 'ISCRIVITI'}">
+        <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
+    </form>
+</div>
