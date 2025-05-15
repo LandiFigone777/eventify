@@ -1,0 +1,28 @@
+<div th:fragment="navbar">
+    <nav style="background-color: #f8f9fa; padding: 10px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;">
+        <!-- Link alla home -->
+        <div>
+            <a href="/home" style="margin-right: 15px; text-decoration: none;">Home</a>
+        </div>
+
+        <!-- Area di ricerca -->
+        <div>
+            <form action="/search" method="get" style="display: flex; align-items: center;">
+                <select name="searchType" style="margin-right: 10px;">
+                    <option value="user">Utente</option>
+                    <option value="eventName">Evento per Nome</option>
+                    <option value="eventType">Evento per Tipo</option>
+                </select>
+                <input type="text" name="searchQuery" placeholder="Cerca..." style="margin-right: 10px;">
+                <button type="submit">Cerca</button>
+            </form>
+        </div>
+
+        <!-- Logout -->
+        <div>
+            <form action="/exit" method="post" style="display: inline;">
+                <button type="submit" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">Logout</button>
+            </form>
+        </div>
+    </nav>
+</div>
