@@ -3,7 +3,9 @@ package org.example.eventify.controller;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpSession;
@@ -189,5 +191,51 @@ public class MainController {
             return "redirect:/verify";
         }
 
+    }
+
+    @GetMapping("/search")
+    public String search(
+            @RequestParam("searchType") String searchType,
+            @RequestParam("searchQuery") String searchQuery,
+            Model model) {
+        List<Map<String, String>> results = new ArrayList<>();
+
+        if (searchType.equals("user")) {
+            // Cerca utenti
+            List<Utente> utenti = utenteService.findAll();
+            for (Utente utente : utenti) {
+                if (utente.getUsername().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("name", utente.getUsername());
+                    result.put("link", "/user/" + utente.getUsername());
+                    results.add(result);
+                }
+            }
+        } else if (searchType.equals("eventName")) {
+            // Cerca eventi per nome
+            List<Evento> eventi = eventoService.findAll();
+            for (Evento evento : eventi) {
+                if (evento.getNome().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("name", evento.getNome());
+                    result.put("link", "/event?id=" + evento.getIdEvento());
+                    results.add(result);
+                }
+            }
+        } else if (searchType.equals("eventType")) {
+            // Cerca eventi per tipo
+            List<Evento> eventi = eventoService.findAll();
+            for (Evento evento : eventi) {
+                if (evento.getTipo().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("name", evento.getNome() + " (" + evento.getTipo() + ")");
+                    result.put("link", "/event?id=" + evento.getIdEvento());
+                    results.add(result);
+                }
+            }
+        }
+
+        model.addAttribute("results", results);
+        return "searchResults"; // Crea una pagina per mostrare i risultati
     }
 }

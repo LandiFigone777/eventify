@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Risultati della ricerca</title>
+</head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    <h1>Risultati della ricerca</h1>
+    <ul>
+        <li th:each="result : ${results}">
+            <a th:href="${result.link}" th:text="${result.name}"></a>
+        </li>
+    </ul>
+</body>
+</html>
