@@ -43,6 +43,7 @@ public class UtenteController {
 
         model.addAttribute("utente", utente);
         model.addAttribute("isFollowing", isFollowing);
+        model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("followersNumber", followersService.followersNumber(utente));
         model.addAttribute("followingNumber", followersService.followingNumber(utente));
 

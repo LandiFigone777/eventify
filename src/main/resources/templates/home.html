@@ -15,6 +15,7 @@ th:text="${msg}">
 <a href="yourEvents">I tuoi eventi creati</a><br>
 <a href="subscriptions">Gli eventi a cui sei iscritto</a><br>
 <a href="userSearch">Ricerca utenti</a>
+<a th:href="'user/' + ${utente.username}">Il tuo profilo</a>
 <form action="/exit" method="post">
     <input type="submit" value="Esci"/>
 </form>
