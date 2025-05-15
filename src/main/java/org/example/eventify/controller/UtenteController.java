@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class UtenteController {
@@ -62,7 +63,9 @@ public class UtenteController {
         if (currentUser == null) {
             return "redirect:/login";
         }
-
+        if(Objects.equals(followedEmail, currentUser.getEmail())) {
+            return "redirect:/user/" + currentUser.getUsername();
+        }
         Utente followed = utenteService.findById(followedEmail);
         if (followed == null) {
             return "redirect:/home?msg=Utente non trovato";

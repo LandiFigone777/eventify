@@ -20,6 +20,9 @@
 
         <!-- Logout -->
         <div>
+            <a th:href="'user/' + ${utente.username}">Il tuo profilo</a>
+        </div>
+        <div>
             <form action="/exit" method="post" style="display: inline;">
                 <button type="submit" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">Logout</button>
             </form>

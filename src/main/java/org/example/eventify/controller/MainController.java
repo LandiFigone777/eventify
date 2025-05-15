@@ -197,8 +197,10 @@ public class MainController {
     public String search(
             @RequestParam("searchType") String searchType,
             @RequestParam("searchQuery") String searchQuery,
-            Model model) {
+            Model model, HttpSession session) {
         List<Map<String, String>> results = new ArrayList<>();
+        Utente utenteLoggato = (Utente) session.getAttribute("user");
+        model.addAttribute("utente", utenteLoggato);
 
         if (searchType.equals("user")) {
             // Cerca utenti
