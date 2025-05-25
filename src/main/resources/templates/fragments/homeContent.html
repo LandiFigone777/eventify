@@ -1,0 +1,35 @@
+<div th:fragment="content">
+    <h2>Eventi pubblici in ordine prima di seguiti e poi di popolarità</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        <div th:each="evento : ${eventiHome}" class="col">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title text-primary fw-bold" th:text="${evento.nome}">Nome evento</h5>
+                            <p class="card-text" th:text="${evento.descrizione}">Descrizione...</p>
+                            <p class="mb-1">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span th:text="${evento.indirizzo + ' ' + evento.numeroCivico}">Indirizzo</span>
+                            </p>
+                            <p class="mb-1">
+                                <i class="bi bi-people-fill"></i>
+                                <span th:text="'Max ' + ${evento.maxPartecipanti} + ' partecipanti'">Partecipanti</span>
+                            </p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-secondary" th:text="${evento.visibilita == 1 ? 'Pubblico' : 'Privato'}">Pubblico</span>
+                            <span class="badge bg-info text-dark" th:text="${evento.etaMinima + '+'}">18+</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{'/event/' + ${evento.idEvento}}" class="btn btn-outline-primary btn-sm">Dettagli</a>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" th:onclick="'subscribeToEvent(' + ${evento.idEvento} + ');'">Partecipa</a>                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

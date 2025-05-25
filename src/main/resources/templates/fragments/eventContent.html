@@ -1,0 +1,105 @@
+<div th:fragment="content">
+  <div class="container my-5" style="max-width: 100dvh;">
+    <h2 class="mb-4" th:text="${evento.nome}">Nome evento</h2>
+    <div class="card shadow-sm mb-4 p-4">
+      <div class="row">
+        <!-- Colonna sinistra: informazioni evento -->
+        <div class="col-lg-7">
+          <h5 class="card-title text-primary fw-bold" th:text="${evento.nome}">Nome evento</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            <i class="bi bi-calendar-event"></i>
+            <span th:text="${#temporals.format(evento.dataOraInizio, 'dd MMMM yyyy - HH:mm')}">Data inizio</span> -
+            <span th:text="${#temporals.format(evento.dataOraFine, 'dd MMMM yyyy - HH:mm')}">Data fine</span>
+          </h6>
+          <p class="mb-1">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span th:text="${evento.indirizzo + ' ' + evento.numeroCivico}">Indirizzo</span>
+          </p>
+          <p class="mb-1">
+            <i class="bi bi-people-fill"></i>
+            <span th:text="'Max ' + ${evento.maxPartecipanti} + ' partecipanti'">Partecipanti</span>
+          </p>
+          <p class="mb-1">
+            <i class="bi bi-cash-coin"></i>
+            <span th:text="${evento.costoIngresso + ' €'}">Costo</span>
+          </p>
+          <p class="mb-1">
+            <i class="bi bi-card-text"></i>
+            <span th:text="${evento.tipo}">Tipo evento</span>
+          </p>
+          <p class="mb-1">
+            <i class="bi bi-exclamation-circle"></i>
+            <span th:text="'Età minima: ' + ${evento.etaMinima} + '+'">Età minima</span>
+          </p>
+          <p class="mt-3" th:text="${evento.descrizione}">Descrizione evento</p>
+        </div>
+        <!-- Colonna destra: carousel e info extra -->
+        <div class="col-lg-5 d-flex flex-column align-items-center">
+          <!-- Galleria immagini -->
+          <div class="w-100 mb-4">
+            <div>
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsbsEDwx3hTZjSeD65Mq9iz3Tc9PVET_eRkg&s" class="img-fluid rounded-3 border gallery-img-large" alt="..." onclick="openModal(this)">
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+              <img src="https://media.istockphoto.com/id/1140180560/it/foto/esplosione-di-polvere-colorata-su-sfondo-nero.jpg?s=612x612&w=0&k=20&c=GEXA0Rr2homGuDTz5hzv42NG4DVM_sZJ2w3muj2Tzms=" class="img-fluid rounded-3 border gallery-img-small" alt="..." onclick="openModal(this)">
+              <img src="https://static.vecteezy.com/ti/foto-gratuito/t2/36324708-ai-generato-immagine-di-un-tigre-a-piedi-nel-il-foresta-foto.jpg" class="img-fluid rounded-3 border gallery-img-small" alt="..." onclick="openModal(this)">
+            </div>
+          </div>
+          <!-- Info extra -->
+          <div class="d-flex flex-column align-items-start mt-2">
+            <div th:replace="~{fragments/like :: like}"></div>
+            <div class="mt-3 w-100">
+              <input id="linkInvito" type="hidden" th:value="'localhost:8080/event?id=' + ${evento.idEvento} + '&invitation=' + ${evento.invito}">
+              <button class="btn btn-outline-secondary btn-sm mb-2" th:if="${(isOwner && evento.visibilita == 0) || evento.visibilita == 1}"
+                      onclick="copyToClipboard(document.getElementById('linkInvito').value)">
+                <i class="bi bi-clipboard"></i> Copia link invito
+              </button>
+            </div>
+            <div class="mt-3">
+              <i class="bi bi-person-fill"></i>
+              Organizzatore:
+              <a th:href="'/user/' + ${organizzatore.username}" th:text="${organizzatore.username}">Organizzatore</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="toast" class="toast" th:if="${msg}" th:text="${msg}"></div>
+  </div>
+  <style>
+.gallery-img-large {
+  height: 300px;
+  object-fit: cover;
+  cursor: pointer;
+}
+.gallery-img-small {
+  height: 145px;
+  width: 49%;
+  object-fit: cover;
+  cursor: pointer;
+}
+  </style>
+  <!-- Modale immagine -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-transparent border-0">
+        <img id="modalImage" src="" class="img-fluid rounded-3" alt="...">
+      </div>
+    </div>
+  </div>
+  <script src="/toast.js"></script>
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+      }).catch(err => {
+        console.error("Failed to copy: ", err);
+      });
+    }
+    function openModal(img) {
+      document.getElementById('modalImage').src = img.src;
+      const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+      modal.show();
+    }
+  </script>
+</div>

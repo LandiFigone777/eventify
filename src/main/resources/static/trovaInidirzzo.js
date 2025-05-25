@@ -11,25 +11,18 @@ function autocompleteAddress() {
 
         const list = document.getElementById('suggestions');
         list.innerHTML = '';
-        if(list.innerHTML === '') {
-            list.style.display = 'none';
-        } else {
-            list.style.display = 'block';
-        }
         suggestions.forEach(item => {
-            const li = document.createElement('option');
-            li.text = item.displayName;
-            li.value = item.displayName;
-            if(list.innerHTML === '') {
-                list.style.display = 'none';
-            } else {
-                list.style.display = 'block';
-            }
+            const li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action';
+            li.textContent = item.displayName;
             li.onclick = () => {
                 document.getElementById('indirizzo').value = item.displayName;
                 list.innerHTML = '';
+                list.style.display = 'none';
+                updateMap(item.lat, item.lon);
             };
             list.appendChild(li);
         });
+        list.style.display = suggestions.length > 0 ? 'block' : 'none';
     }, 300);
 }

@@ -3,7 +3,9 @@ package org.example.eventify.controller;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpSession;
@@ -66,6 +68,7 @@ public class MainController {
             model.addAttribute("eventiHome", eventiHomeObj);
             model.addAttribute("msg", msg);
             model.addAttribute("usernames", usernames);
+            model.addAttribute("activePage", "home");
             return "home";
         } else {
             return "redirect:/login";
@@ -165,6 +168,7 @@ public class MainController {
     public String publicEvents(Model model) {
         List<Evento> eventiPubblici = eventoService.getByVisibilita(1);
         model.addAttribute("eventiPubblici", eventiPubblici);
+
         return "publicEvents";
     }
 
@@ -190,4 +194,54 @@ public class MainController {
         }
 
     }
+
+    @GetMapping("/search")
+    public String search(
+            @RequestParam("searchType") String searchType,
+            @RequestParam("searchQuery") String searchQuery,
+            Model model, HttpSession session) {
+        List<Map<String, String>> results = new ArrayList<>();
+        Utente utenteLoggato = (Utente) session.getAttribute("user");
+        model.addAttribute("utente", utenteLoggato);
+
+        if (searchType.equals("user")) {
+            // Cerca utenti
+            List<Utente> utenti = utenteService.findAll();
+            for (Utente utente : utenti) {
+                if (utente.getUsername().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("name", utente.getUsername());
+                    result.put("link", "/user/" + utente.getUsername());
+                    results.add(result);
+                }
+            }
+        } else if (searchType.equals("eventName")) {
+            // Cerca eventi per nome
+            List<Evento> eventi = eventoService.findAll();
+            for (Evento evento : eventi) {
+                if (evento.getNome().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("name", evento.getNome());
+                    result.put("link", "/event?id=" + evento.getIdEvento());
+                    results.add(result);
+                }
+            }
+        } else if (searchType.equals("eventType")) {
+            // Cerca eventi per tipo
+            List<Evento> eventi = eventoService.findAll();
+            for (Evento evento : eventi) {
+                if (evento.getTipo().toLowerCase().contains(searchQuery.toLowerCase())) {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("name", evento.getNome() + " (" + evento.getTipo() + ")");
+                    result.put("link", "/event?id=" + evento.getIdEvento());
+                    results.add(result);
+                }
+            }
+        }
+
+        model.addAttribute("results", results);
+        return "searchResults"; // Crea una pagina per mostrare i risultati
+    }
+
+
 }

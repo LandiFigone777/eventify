@@ -4,49 +4,43 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/toast.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Bootstrap 5 JS (opzionale per dropdown/toggle) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
 </head>
 <body>
-<div id="toast" class="toast" 
-th:if="${msg}" 
+<div id="toast" class="toast"
+th:if="${msg}"
 th:text="${msg}">
 </div>
-<p>sei nella home</p>
-<a href="addEvent">Inserisci nuovo evento</a><br>
-<a href="yourEvents">I tuoi eventi creati</a><br>
-<a href="subscriptions">Gli eventi a cui sei iscritto</a><br>
-<a href="userSearch">Ricerca utenti</a>
-<form action="/exit" method="post">
-    <input type="submit" value="Esci"/>
-</form>
-<h2>Eventi pubblici in ordine prima di seguiti e poi di popolarità</h2>
-<h3 th:text="${msg}"></h3>
-<table>
-    <thead>
-    <tr>
-        <th>Nome Evento</th>
-        <th>Data e ora inizio</th>
-        <th>Data e ora fine</th>
-        <th>Luogo</th>
-        <th>Iscrizione</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="evento : ${eventiHome}">
-        <td th:text="${evento.nome}"></td>
-        <td th:text="${evento.dataOraInizio}"></td>
-        <td th:text="${evento.dataOraFine}"></td>
-        <td th:text="${evento.indirizzo}"></td>
-        <td>
-            <form action="/event" method="get">
-                <input type="hidden" name="id" th:value="${evento.idEvento}"/>
-                <input type="submit" value="Dettagli evento"/>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div th:replace="~{fragments/navbar :: navbar(content=~{fragments/homeContent :: content}, activePage='home')}"></div><br>
 <br>
 <br>
-<br>
+</div>
+<script>
+    function subscribeToEvent(eventId) {
+        fetch('/events/subscribe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idEvento: eventId })
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Reindirizza direttamente alla pagina delle iscrizioni
+                    window.location.href = '/subscriptions';
+                } else {
+                    alert('Errore durante l\'iscrizione.');
+                }
+            })
+            .catch(error => {
+                console.error('Errore:', error);
+                alert('Errore durante l\'iscrizione.');
+            });
+    }
+</script>
 </body>
 </html>

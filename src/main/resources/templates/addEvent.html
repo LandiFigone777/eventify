@@ -1,29 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Aggiungi evento</title>
+    <link rel="stylesheet" href="/toast.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
-    <form action="addEvent" method="post" enctype="multipart/form-data">
-        <input type="text" id="nome" name="nome" placeholder="nome evento">
-        <input type="datetime-local" id="dataOraInizio" name="dataOraInizio" placeholder="data e ora inizio">
-        <input type="datetime-local" id="dataOraFine" name="dataOraFine" placeholder="data e ora fine">
-        <input type="text" id="indirizzo" name="indirizzo" oninput="autocompleteAddress()" placeholder="Inserisci indirizzo..."/>
-        <input type="number" id="numCivico" name="numCivico" placeholder="numero civico">
-        <input type="text" id="tipo" name="tipo" placeholder="tipo (festa, sagra ecc...)">
-        <select name="visibilita" id="visibilita">
-            <option value="pubblico">Pubblico</option>
-            <option value="privato">Privato</option>
-        </select>
-        <input type="text" id="descrizione" name="descrizione" placeholder="descrizione">
-        <input type="number" id="etaMinima" name="etaMinima" placeholder="eta minima">
-        <input type="number" id="maxPartecipanti" name="maxPartecipanti" placeholder="partecipanti max">
-        <input type="text" id="costoIngresso" name="costoIngresso" placeholder="costo ingresso">
-        <input type="file" id="immagini" name="immagini" multiple>
-        <input type="submit" placeholder="salva evento">
-        <select id="suggestions" style="display: none;"></select>
-    </form>
-    <script src="/trovaInidirzzo.js"></script>
+<div th:replace="~{fragments/navbar :: navbar(content=~{fragments/addEventContent :: content}, activePage='addEvent')}"></div><br>
+
+
+
+<!--<script src="/trovaInidirzzo.js"></script>-->
+<script>
+    let map = L.map('map').setView([45.85, 9.4], 13); // inizialmente su Lecco
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker;
+
+    let timeout = null;
+
+    function autocompleteAddress() {
+        clearTimeout(timeout);
+        timeout = setTimeout(async () => {
+            const input = document.getElementById('indirizzo').value;
+            if (!input.trim()) return;
+
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(input)}&limit=5&addressdetails=1`);
+            const suggestions = await response.json();
+
+            console.log('Suggerimenti ricevuti:', suggestions);
+
+            const list = document.getElementById('suggestions');
+            list.innerHTML = '';
+
+            suggestions.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item list-group-item-action';
+                li.textContent = item.display_name;
+
+                li.onclick = () => {
+                    document.getElementById('indirizzo').value = item.display_name;
+                    list.innerHTML = '';
+                    list.style.display = 'none';
+
+                    const lat = parseFloat(item.lat);
+                    const lon = parseFloat(item.lon);
+                    console.log('Updating map with:', lat, lon);
+                    updateMap(lat, lon);
+                };
+
+                list.appendChild(li);
+            });
+
+            list.style.display = suggestions.length > 0 ? 'block' : 'none';
+        }, 300);
+    }
+
+    function updateMap(lat, lon) {
+        if (marker) map.removeLayer(marker);
+        marker = L.marker([lat, lon]).addTo(map);
+        map.setView([lat, lon], 16);
+    }
+</script>
 </body>
 </html>

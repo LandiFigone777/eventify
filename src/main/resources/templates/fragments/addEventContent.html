@@ -1,0 +1,50 @@
+<div th:fragment="content">
+  <h2 class="mb-4">Crea un nuovo evento</h2>
+  <div class="card shadow-sm p-4">
+    <form action="/addEvent" method="post" enctype="multipart/form-data" class="row g-3">
+      <div class="col-md-6">
+        <input type="text" name="nome" class="form-control" placeholder="Nome evento" required>
+      </div>
+      <div class="col-md-6">
+        <input type="text" name="tipo" class="form-control" placeholder="Tipo (festa, sagra...)" required>
+      </div>
+      <div class="col-md-6">
+        <input type="datetime-local" name="dataOraInizio" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <input type="datetime-local" name="dataOraFine" class="form-control" required>
+      </div>
+      <div class="col-md-8">
+        <input type="text" id="indirizzo" name="indirizzo" class="form-control" placeholder="Indirizzo" oninput="autocompleteAddress()" required>      </div>
+      <ul id="suggestions" class="list-group mt-2" style="display: none; position: absolute; z-index: 1000;"></ul>
+      <div class="col-md-4">
+        <input type="number" name="numCivico" class="form-control" placeholder="Numero civico" required>
+      </div>
+      <div class="col-md-6">
+        <select name="visibilita" class="form-select" required>
+          <option value="pubblico">Pubblico</option>
+          <option value="privato">Privato</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <input type="text" name="descrizione" class="form-control" placeholder="Descrizione" required>
+      </div>
+      <div class="col-md-6">
+        <input type="number" name="etaMinima" class="form-control" placeholder="Età minima" required>
+      </div>
+      <div class="col-md-6">
+        <input type="number" name="maxPartecipanti" class="form-control" placeholder="Partecipanti max" required>
+      </div>
+      <div class="col-md-6">
+        <input type="text" name="costoIngresso" class="form-control" placeholder="Costo ingresso (€)">
+      </div>
+      <div class="col-md-6">
+        <input type="file" name="immagini" class="form-control" multiple>
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-primary">Salva evento</button>
+      </div>
+    </form>
+    <div id="map" style="height: 400px;" class="mt-4 rounded border"></div>
+  </div>
+</div>

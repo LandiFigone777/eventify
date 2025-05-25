@@ -13,10 +13,7 @@ import org.example.eventify.repository.InvitoRepository;
 import org.example.eventify.repository.PartecipazioneRepository;
 import org.example.eventify.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,10 +46,13 @@ public class EventController {
 
 
     @GetMapping("/addEvent")
-    public String addEventForm(Model model, HttpSession session) {
-        if(session.getAttribute("user") == null) {
+    public String addEvent(Model model, HttpSession session) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if (utente == null) {
             return "redirect:/login";
         }
+        model.addAttribute("utente", utente);
+        model.addAttribute("activePage", "addEvent");
         return "addEvent";
     }
 
@@ -109,31 +109,46 @@ public class EventController {
         }
     }
 
-    @PostMapping("/subscribe")
-    public String subscribe(@RequestParam Integer idEvento, @RequestParam String partecipa, HttpSession session, Model model) {
+    @PostMapping("/events/subscribe")
+    public String subscribe(@RequestBody Map<String, Object> payload, HttpSession session, RedirectAttributes redirectAttributes) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente == null) {
+            redirectAttributes.addFlashAttribute("error", "Utente non autenticato");
             return "redirect:/login";
         }
+
+        Integer idEvento = (Integer) payload.get("idEvento");
         Evento evento = eventoService.findById(idEvento);
-        if (evento != null) {
-            if (partecipa.equals("DISISCRIVITI")) {
-                Partecipazione partecipazione = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente);
-                if (partecipazione != null) {
-                    partecipazioneRepository.delete(partecipazione);
-                }
-            } else if (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null) {
-                Partecipazione partecipazione = new Partecipazione();
-                partecipazione.setPartecipante(utente);
-                partecipazione.setEvento(evento);
-                partecipazioneService.save(partecipazione);
-            }
-            // Aggiungi la variabile 'partecipato' al modello
-            boolean partecipato = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null;
-            model.addAttribute("partecipato", partecipato);
-            model.addAttribute("evento", evento);
+        if (evento == null) {
+            redirectAttributes.addFlashAttribute("error", "Evento non trovato");
+            return "redirect:/home";
         }
-        return "fragments/subscribe :: subscribe";
+
+        if (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null) {
+            redirectAttributes.addFlashAttribute("error", "Utente già iscritto all'evento");
+            return "redirect:/home";
+        }
+
+        Partecipazione partecipazione = new Partecipazione();
+        partecipazione.setPartecipante(utente);
+        partecipazione.setEvento(evento);
+        partecipazioneService.save(partecipazione);
+
+        // Optionally, send a notification email to the user
+        String subject = "Iscrizione all'evento: " + evento.getNome();
+        String message = "Ciao " + utente.getNome() + ",\n\n" +
+                "Ti sei iscritto con successo all'evento: " + evento.getNome() + ".\n" +
+                "Data e ora: " + evento.getDataOraInizio() + "\n" +
+                "Luogo: " + evento.getIndirizzo() + ", " + evento.getNumeroCivico() + "\n\n" +
+                "Grazie per esserti iscritto!\n\n" +
+                "Cordiali saluti,\n" +
+                "Il team di Eventify";
+        System.out.println("Sending email to: " + utente.getEmail());
+        emailService.sendEmail(utente.getEmail(), subject, message);
+
+        // Optionally, add a success message
+        redirectAttributes.addFlashAttribute("success", "Iscrizione avvenuta con successo");
+        return "redirect:/subscriptions";
     }
 
     @GetMapping("/subscriptions")
@@ -154,8 +169,8 @@ public class EventController {
         }
     }
 
-    @GetMapping("/event")
-    public String showEvent(@RequestParam("id") Integer idEvento, @RequestParam(value = "invitation", required = false) String invito, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+    @GetMapping("/event/{id}")
+    public String showEvent(@PathVariable("id") Integer idEvento, @RequestParam(value = "invitation", required = false) String invito, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente != null) {
             Evento evento = eventoService.findById(idEvento);

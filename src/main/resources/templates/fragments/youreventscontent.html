@@ -1,0 +1,36 @@
+<div th:fragment="content">
+    <h2 class="mb-4">I tuoi eventi creati</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        <div th:each="evento : ${eventi}" class="col">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title text-primary fw-bold" th:text="${evento.nome}">Nome evento</h5>
+                            <h6 class="card-subtitle mb-2 text-muted" th:text="${#temporals.format(evento.dataOraInizio, 'dd MMMM yyyy - HH:mm')}">Data e ora</h6>
+                            <p class="card-text mt-2" th:text="${evento.descrizione}">Descrizione evento.</p>
+                            <p class="mb-1">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span th:text="${evento.indirizzo + ' ' + evento.numeroCivico}">Indirizzo</span>
+                            </p>
+                            <p class="mb-1">
+                                <i class="bi bi-people-fill"></i>
+                                <span th:text="'Max ' + ${evento.maxPartecipanti} + ' partecipanti'">Partecipanti</span>
+                            </p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-secondary" th:text="${evento.visibilita == 1 ? 'Pubblico' : 'Privato'}">Pubblico</span>
+                            <span class="badge bg-info text-dark" th:text="${evento.etaMinima + '+'}">18+</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{'/event/' + ${evento.idEvento}}" class="btn btn-outline-primary btn-sm">Dettagli</a>
+                        <a th:href="@{'/event/' + ${evento.idEvento} + '/join'}" class="btn btn-primary btn-sm">Modifica</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
