@@ -2,16 +2,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <style>
-  .nav-link.active {
-    background-color: #e7f1ff;
-    border-radius: 8px;
-    color: white !important;
-  }
 </style>
+<link rel="stylesheet" href="/custom.css">
+
 <body>
 <div th:fragment="navbar(content, activePage)" class="d-flex">  <!-- Sidebar -->
-  <nav class="d-flex flex-column flex-shrink-0 p-3 bg-white shadow-sm border-end" style="width: 250px; height: 100vh; position: fixed;">
-    <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-primary text-decoration-none fw-bold fs-4">
+  <nav class="d-flex flex-column flex-shrink-0 p-3 shadow-sm border-end custom-navbar" style="width: 250px; height: 100vh; position: fixed; background-color: #dbdbdb">    <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-primary text-decoration-none fw-bold fs-4">
+      <img src="/logo.svg" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+
       Eventify
     </a>
     <hr>
@@ -49,6 +47,13 @@
            class="nav-link"
            th:classappend="${activePage} == 'userSearch' ? ' active fw-bold' : ' text-dark text-primary'">
           <i class="bi bi-search"></i> Ricerca utenti
+        </a>
+      </li>
+      <li>
+        <a href="/profile"
+           class="nav-link"
+           th:classappend="${activePage} == 'profile' ? ' active fw-bold' : ' text-dark text-primary'">
+          <i class="bi bi-person-circle"></i> Profilo
         </a>
       </li>
     </ul>

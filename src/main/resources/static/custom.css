@@ -1,0 +1,130 @@
+:root {
+    /* Colore primario personalizzato */
+    --bs-primary: #324e9d;
+    --bs-primary-rgb: 50, 78, 157;
+
+    /* Colori di sfondo */
+    --bs-primary-bg-subtle: rgba(50, 78, 157, 0.1);
+
+    /* Colori di bordo */
+    --bs-primary-border-subtle: rgba(50, 78, 157, 0.2);
+
+    /* Colori di testo */
+    --bs-primary-text: #fff;
+
+    /* Colori di ombreggiatura */
+    --bs-primary-shadow: rgba(50, 78, 157, 0.5);
+
+    /* Colori di focus */
+    --bs-primary-focus-shadow-rgb: 50, 78, 157;
+    --bs-primary-focus-ring-opacity: 0.25;
+    --bs-primary-focus-ring: rgba(50, 78, 157, 0.25);
+}
+
+/* Navbar background and text colors */
+.navbar {
+    background-color: #f4f4f4; !important;/* Your custom blue */
+    color: white;
+}
+
+nav {
+    background-color: #f4f4f4 !important; /* Cambia il colore con quello desiderato */
+}
+.custom-navbar {
+    background-color: #f4f4f4; /* Cambia il colore con quello desiderato */
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: #f7a52c; /* Highlight color on hover */
+    text-decoration: underline;
+}
+
+/* Stile per il pulsante selezionato nella navbar */
+.nav-link.active {
+    background-color: #324e9d !important;
+    color: #ffffff !important; /* Testo bianco */
+    border-radius: 8px; /* Bordo arrotondato */
+    font-weight: bold;
+    pointer-events: none; /* Disabilita hover */
+}
+
+/* Disabilita il cambio colore al passaggio del mouse */
+.nav-link.active:hover {
+    background-color: #324e9d !important;
+    color: #ffffff !important; /* Mantieni testo bianco */
+}
+
+/* Sidebar styling */
+.nav-pills .nav-link {
+    color: #ffffff; /* Default link color */
+    background-color: transparent;
+    border: none;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Hover effect */
+    color: #f7a52c;
+}
+
+/* Sidebar button styling */
+.btn-outline-primary {
+    color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+
+.btn-outline-primary:hover {
+    color: white !important; /* Ensure the text color changes to white */
+    background-color: #f7a52c !important; /* Keep the hover background color */
+    border-color: #f7a52c !important; /* Keep the hover border color */
+}
+
+
+/* Pulsanti */
+.btn-primary {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.85) !important;
+    border-color: rgba(var(--bs-primary-rgb), 0.85) !important;
+    color: #fff !important;
+}
+
+/* Badge */
+.badge-primary {
+    background-color: var(--bs-primary) !important;
+    color: #fff !important;
+}
+
+/* Link */
+a {
+    color: var(--bs-primary) !important;
+}
+
+a:hover {
+    color: rgba(var(--bs-primary-rgb), 0.85) !important;
+}
+
+/* Progress bar */
+.progress-bar {
+    background-color: var(--bs-primary) !important;
+}
+
+/* Alert */
+.alert-primary {
+    background-color: var(--bs-primary-bg-subtle) !important;
+    border-color: var(--bs-primary-border-subtle) !important;
+    color: var(--bs-primary-text) !important;
+}
+.badge-eta {
+    background-color: #f7a52c;
+    color: white;
+}

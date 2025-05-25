@@ -30,6 +30,7 @@ public class MainController {
     @Autowired
     private EventoService eventoService;
 
+
     @GetMapping("/")
     public String home(RedirectAttributes redirectAttributes) {
         Utente utente = new Utente();
@@ -38,7 +39,9 @@ public class MainController {
     }
 
     @GetMapping("/home")
-    public String homePage(HttpSession session, Model model, @RequestParam(required = false) String msg) {
+    public String homePage(HttpSession session, Model model,
+                           @RequestParam(required = false) String msg,
+                           @RequestParam(required = false) String search) {
         Utente utente = (Utente) session.getAttribute("user");
 
         List<Utente> allUtenti = utenteService.findAll();
@@ -46,20 +49,29 @@ public class MainController {
 
         if (utente != null) {
             model.addAttribute("utente", utente);
-            List<Integer> eventiHome = eventoService.getEventiOrderedByPopolaritaOfFollowingUsers(utente.getEmail());
-            List<Integer> eventiHomeNotFollowing = eventoService.getEventiOrderedByPopolaritaOfNotFollowingUsers(utente.getEmail());
+
             List<Evento> eventiHomeObj = new ArrayList<>();
 
-            for(Integer evento : eventiHome) {
-                Evento eventoObj = eventoService.findById(evento);
-                eventiHomeObj.add(eventoObj);
-            }
-            for(Integer evento : eventiHomeNotFollowing) {
-                Evento eventoObj = eventoService.findById(evento);
-                eventiHomeObj.add(eventoObj);
+            if (search != null && !search.isEmpty()) {
+                // Cerca eventi per nome o descrizione
+                eventiHomeObj = eventoService.searchVisibiliPerUtente(utente, search);
+                model.addAttribute("searchQuery", search);
+            } else {
+                // Mostra eventi ordinati come prima
+                List<Integer> eventiHome = eventoService.getEventiOrderedByPopolaritaOfFollowingUsers(utente.getEmail());
+                List<Integer> eventiHomeNotFollowing = eventoService.getEventiOrderedByPopolaritaOfNotFollowingUsers(utente.getEmail());
+
+                for (Integer evento : eventiHome) {
+                    Evento eventoObj = eventoService.findById(evento);
+                    eventiHomeObj.add(eventoObj);
+                }
+                for (Integer evento : eventiHomeNotFollowing) {
+                    Evento eventoObj = eventoService.findById(evento);
+                    eventiHomeObj.add(eventoObj);
+                }
             }
 
-            for(Utente u : allUtenti) {
+            for (Utente u : allUtenti) {
                 if (!u.getEmail().equals(utente.getEmail())) {
                     usernames.add(u.getUsername());
                 }
@@ -163,6 +175,57 @@ public class MainController {
             return "redirect:/register?error=Exception";
         }
     }
+
+    @GetMapping("/profile")
+    public String profilo(HttpSession session, Model model) {
+        Utente utenteLoggato = (Utente) session.getAttribute("user");
+        if (utenteLoggato == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("utente", utenteLoggato);
+        model.addAttribute("activePage", "profile");
+        return "profile";
+    }
+
+    @GetMapping("/editProfile")
+    public String editProfileForm(HttpSession session, Model model) {
+        Utente utenteLoggato = (Utente) session.getAttribute("user");
+        if (utenteLoggato == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("utente", utenteLoggato);
+        model.addAttribute("activePage", "profile");
+        return "editProfile";
+    }
+
+    @PostMapping("/editProfile")
+    public String editProfile(
+            @RequestParam String nome,
+            @RequestParam String cognome,
+            @RequestParam String dataNascita,
+            @RequestParam String indirizzo,
+            @RequestParam String numeroCivico,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Utente utenteLoggato = (Utente) session.getAttribute("user");
+        if (utenteLoggato == null) {
+            return "redirect:/login";
+        }
+
+        utenteLoggato.setNome(nome);
+        utenteLoggato.setCognome(cognome);
+        utenteLoggato.setDataNascita(LocalDate.parse(dataNascita));
+        utenteLoggato.setIndirizzo(indirizzo);
+        utenteLoggato.setNumeroCivico(numeroCivico);
+
+        utenteService.save(utenteLoggato);
+        session.setAttribute("user", utenteLoggato);
+
+        redirectAttributes.addFlashAttribute("msg", "Profilo aggiornato con successo");
+        return "redirect:/profile";
+    }
+
 
     @GetMapping("/publicEvents")
     public String publicEvents(Model model) {

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+  <div class="container mt-4">
+    <h1 th:text="'Profilo di ' + ${utente.username}">Profilo Utente</h1>
+    <p><strong>Nome:</strong> <span th:text="${utente.nome}">Nome</span></p>
+    <p><strong>Cognome:</strong> <span th:text="${utente.cognome}">Cognome</span></p>
+
+    <div class="my-3">
+      <a th:text="'Followers: ' + ${followersNumber}" th:href="'/user/' + ${utente.username} + '/followers'" class="btn btn-outline-primary me-2"></a>
+      <a th:text="'Seguiti: ' + ${followingNumber}" th:href="'/user/' + ${utente.username} + '/following'" class="btn btn-outline-primary"></a>
+    </div>
+
+    <form action="/follow" method="post" class="my-3">
+      <input type="hidden" name="followedEmail" th:value="${utente.email}" />
+      <button type="submit" class="btn btn-primary" th:text="${isFollowing ? 'Smetti di seguire' : 'Segui'}"></button>
+    </form>
+
+    <h2 class="mt-5">Eventi creati da <span th:text="${utente.username}"></span></h2>
+    <ul class="list-group">
+      <li th:each="evento : ${eventi}" class="list-group-item">
+        <a th:href="@{'/event/' + ${evento.idEvento}}" th:text="${evento.nome}" class="text-decoration-none"></a>
+      </li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

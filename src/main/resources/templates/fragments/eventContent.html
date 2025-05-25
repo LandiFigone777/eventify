@@ -1,6 +1,5 @@
 <div th:fragment="content">
-  <div class="container my-5" style="max-width: 100dvh;">
-    <h2 class="mb-4" th:text="${evento.nome}">Nome evento</h2>
+  <div class="container my-5">
     <div class="card shadow-sm mb-4 p-4">
       <div class="row">
         <!-- Colonna sinistra: informazioni evento -->
@@ -31,14 +30,14 @@
             <i class="bi bi-exclamation-circle"></i>
             <span th:text="'Età minima: ' + ${evento.etaMinima} + '+'">Età minima</span>
           </p>
-          <p class="mt-3" th:text="${evento.descrizione}">Descrizione evento</p>
+          <p class="mt-3" style="max-width: 500px; word-wrap: break-word; white-space: normal;" th:text="${evento.descrizione}">Descrizione evento</p>
         </div>
         <!-- Colonna destra: carousel e info extra -->
-        <div class="col-lg-5 d-flex flex-column align-items-center">
+        <div class="col-lg-5 d-flex flex-column align-items-left text-break">
           <!-- Galleria immagini -->
           <div class="w-100 mb-4">
             <div>
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsbsEDwx3hTZjSeD65Mq9iz3Tc9PVET_eRkg&s" class="img-fluid rounded-3 border gallery-img-large" alt="..." onclick="openModal(this)">
+              <img src="https://media.istockphoto.com/id/1140180560/it/foto/esplosione-di-polvere-colorata-su-sfondo-nero.jpg?s=612x612&w=0&k=20&c=GEXA0Rr2homGuDTz5hzv42NG4DVM_sZJ2w3muj2Tzms=" class="img-fluid rounded-3 border gallery-img-large" alt="..." onclick="openModal(this)">
             </div>
             <div class="d-flex justify-content-between mt-2">
               <img src="https://media.istockphoto.com/id/1140180560/it/foto/esplosione-di-polvere-colorata-su-sfondo-nero.jpg?s=612x612&w=0&k=20&c=GEXA0Rr2homGuDTz5hzv42NG4DVM_sZJ2w3muj2Tzms=" class="img-fluid rounded-3 border gallery-img-small" alt="..." onclick="openModal(this)">
@@ -49,7 +48,7 @@
           <div class="d-flex flex-column align-items-start mt-2">
             <div th:replace="~{fragments/like :: like}"></div>
             <div class="mt-3 w-100">
-              <input id="linkInvito" type="hidden" th:value="'localhost:8080/event?id=' + ${evento.idEvento} + '&invitation=' + ${evento.invito}">
+              <input id="linkInvito" type="hidden" th:value="'localhost:8080/event/' + ${evento.idEvento} + '?invitation=' + ${evento.invito}">
               <button class="btn btn-outline-secondary btn-sm mb-2" th:if="${(isOwner && evento.visibilita == 0) || evento.visibilita == 1}"
                       onclick="copyToClipboard(document.getElementById('linkInvito').value)">
                 <i class="bi bi-clipboard"></i> Copia link invito

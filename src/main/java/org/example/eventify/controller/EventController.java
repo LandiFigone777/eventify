@@ -23,10 +23,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Controller
 public class EventController {
 
+
+    private static final Logger logger = LoggerFactory.getLogger(EventController.class);
     @Autowired
     private UtenteService utenteService;
     @Autowired
@@ -187,7 +192,7 @@ public class EventController {
             else if(evento.getVisibilita() == 0 && partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && invitoService.getInvitoByEventoAndInvitato(evento, utente) != null){
                 return eventChecks(model, evento, utente, idEvento);
             }
-            else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null || Objects.equals(evento.getInvito(), invito))) {
+            else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && Objects.equals(evento.getInvito(), invito))){
                 if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && Objects.equals(evento.getInvito(), invito)){
                     if(invitoService.getInvitoByEventoAndInvitato(evento, utente) == null) {
                         Invito invito1 = new Invito();
@@ -195,6 +200,11 @@ public class EventController {
                         invito1.setInvitato(utente);
                         invitoService.save(invito1);
                     }
+                    // Crea la partecipazione
+                    Partecipazione partecipazione = new Partecipazione();
+                    partecipazione.setEvento(evento);
+                    partecipazione.setPartecipante(utente);
+                    partecipazioneService.save(partecipazione);
                 }
                 return eventChecks(model, evento, utente, idEvento);
             }

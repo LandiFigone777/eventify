@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="container mt-4">
+        <h1>Modifica Profilo</h1>
+        <form action="/editProfile" method="post" class="mt-4">
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nome" name="nome" th:value="${utente.nome}" required>
+            </div>
+            <div class="mb-3">
+                <label for="cognome" class="form-label">Cognome</label>
+                <input type="text" class="form-control" id="cognome" name="cognome" th:value="${utente.cognome}" required>
+            </div>
+            <div class="mb-3">
+                <label for="dataNascita" class="form-label">Data di nascita</label>
+                <input type="date" class="form-control" id="dataNascita" name="dataNascita" th:value="${utente.dataNascita}" required>
+            </div>
+            <div class="mb-3">
+                <label for="indirizzo" class="form-label">Indirizzo</label>
+                <input type="text" class="form-control" id="indirizzo" name="indirizzo" th:value="${utente.indirizzo}">
+            </div>
+            <div class="mb-3">
+                <label for="numeroCivico" class="form-label">Numero Civico</label>
+                <input type="text" class="form-control" id="numeroCivico" name="numeroCivico" th:value="${utente.numeroCivico}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+            <a href="/profile" class="btn btn-secondary ms-2">Annulla</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

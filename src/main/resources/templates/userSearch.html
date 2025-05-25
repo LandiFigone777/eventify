@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <title>Ricerca utenti</title>
+    <title>Title</title>
+    <link rel="stylesheet" href="/toast.css">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/custom.css">
     <!-- Bootstrap 5 JS (opzionale per dropdown/toggle) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
 
 </head>
 <body>
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-<input type="text" id="filterInput" onkeyup="filter()" placeholder="Cerca per username..." />
-
-<ul id="resultsList">
-    <li th:each="username : ${usernames}"><a th:href="'user/' + ${username}" th:text="${username}"></a></li>
-</ul>
+<div th:replace="~{fragments/navbar :: navbar(content=~{fragments/userSearchContent :: content}, activePage='userSearch')}"></div><br>
 
 <script>
     const filterInput = document.getElementById('filterInput');
@@ -29,7 +27,6 @@
         let a, txtValue;
 
         for (let i = 0; i < items.length; i++) {
-            console.log(items.length);
             a = items[i];
             txtValue = a.textContent || a.innerText;
             if (txtValue.toLowerCase().indexOf(filterValue) > -1) {
@@ -41,4 +38,5 @@
     }
 </script>
 </body>
+
 </html>

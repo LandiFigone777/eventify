@@ -1,0 +1,19 @@
+<div th:fragment="content">
+  <div class="container mt-4">
+    <h2>Utenti Follower</h2>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Username follower</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="follower : ${followers}">
+        <td>
+          <a th:text="${follower.username}" th:href="'/user/' + ${follower.username}"></a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

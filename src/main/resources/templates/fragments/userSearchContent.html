@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+  <div class="container mt-4">
+    <h1 class="text-center">Cerca Utenti</h1>
+    <p class="text-center text-muted">Trova facilmente gli utenti registrati su Eventify. Inserisci un nome utente per cercare:</p>
+
+    <div class="input-group my-4">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" id="filterInput" onkeyup="filter()" class="form-control" placeholder="Cerca per username...">
+    </div>
+
+    <ul id="resultsList" class="list-group">
+      <li th:each="username : ${usernames}" class="list-group-item">
+        <a th:href="'user/' + ${username}" th:text="${username}" class="text-decoration-none text-primary"></a>
+      </li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

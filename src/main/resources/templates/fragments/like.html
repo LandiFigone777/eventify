@@ -1,11 +1,11 @@
-<div th:fragment="like">
+<div th:fragment="like" class="like-container">
     <form id="like-container"
           hx-post="/likeEvent"
           hx-include="[name='idEvento']"
           hx-target="#like-container"
           hx-swap="outerHTML">
-        <input type="submit" id="like" name="like" th:value="${liked ? 'HAI MESSO MI PIACE' : 'NON HAI MESSO MI PIACE'}">
+        <input type="submit" id="like" name="like" th:value="${liked ? 'HAI MESSO MI PIACE' : 'NON HAI MESSO MI PIACE'}" class="like-button">
         <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
-        <p th:text="${likesNumber} + ' like totali'"></p>
+        <p class="like-count" th:text="${likesNumber} + ' like totali'"></p>
     </form>
 </div>

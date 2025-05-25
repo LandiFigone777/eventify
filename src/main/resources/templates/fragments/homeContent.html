@@ -1,14 +1,20 @@
 <div th:fragment="content">
-    <h2>Eventi pubblici in ordine prima di seguiti e poi di popolarità</h2>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <h2>Eventi pubblici in ordine prima di seguiti e poi di popolarità</h2>
+    <div class="d-flex justify-content-end mb-3">
+        <form th:action="@{/home}" method="get" class="d-flex">
+            <input type="text" name="search" class="form-control me-2" placeholder="Cerca eventi...">
+            <button type="submit" class="btn btn-outline-primary">Cerca</button>
+        </form>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div th:each="evento : ${eventiHome}" class="col">
             <div class="card shadow-sm h-100">
                 <div class="card-body d-flex flex-column justify-content-between">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h5 class="card-title text-primary fw-bold" th:text="${evento.nome}">Nome evento</h5>
-                            <p class="card-text" th:text="${evento.descrizione}">Descrizione...</p>
+                            <h5 class="card-title text-primary fw-bold" th:text="${#strings.length(evento.nome) > 20 ? evento.nome.substring(0, 20) + '...' : evento.nome}">Nome evento</h5>
+                            <p class="card-text" th:text="${#strings.length(evento.descrizione) > 30 ? evento.descrizione.substring(0, 30) + '...' : evento.descrizione}">Descrizione...</p>
                             <p class="mb-1">
                                 <i class="bi bi-geo-alt-fill"></i>
                                 <span th:text="${evento.indirizzo + ' ' + evento.numeroCivico}">Indirizzo</span>
@@ -20,7 +26,7 @@
                         </div>
                         <div class="text-end">
                             <span class="badge bg-secondary" th:text="${evento.visibilita == 1 ? 'Pubblico' : 'Privato'}">Pubblico</span>
-                            <span class="badge bg-info text-dark" th:text="${evento.etaMinima + '+'}">18+</span>
+                            <span class="badge badge-eta" th:text="${evento.etaMinima + '+'}">18+</span>
                         </div>
                     </div>
                     <hr>

@@ -22,7 +22,7 @@ public interface EventoRepository extends JpaRepository<Evento, Integer> {
             GROUP BY evento.id_evento
             ORDER BY COUNT(eventi_preferiti.id_evento) DESC""")
     List<Integer> getEventiOrderedByPopolaritaOfFollowingUsers(@Param("utente") String utente);
-
+    List<Evento> findByNomeContainingIgnoreCaseOrDescrizioneContainingIgnoreCase(String nome, String descrizione);
     @Query(nativeQuery = true, value = """
             SELECT evento.id_evento FROM
             evento LEFT JOIN eventi_preferiti ON evento.id_evento = eventi_preferiti.id_evento
@@ -33,5 +33,17 @@ public interface EventoRepository extends JpaRepository<Evento, Integer> {
 
     List<Evento> findByOrganizzatoreAndVisibilita(Utente organizzatore, Integer visibilita);
 
+    // Eventi pubblici che contengono il testo nel nome o descrizione
+    List<Evento> findByVisibilitaAndNomeContainingIgnoreCaseOrVisibilitaAndDescrizioneContainingIgnoreCase(
+            Integer visibilita1, String nome, Integer visibilita2, String descrizione
+    );
+
+    List<Evento> findByVisibilitaAndOrganizzatoreEmail(Integer visibilita, String email);
+
+    @Query("""
+    SELECT e FROM Evento e JOIN Partecipazione p ON e.idEvento = p.evento.idEvento
+    WHERE e.visibilita = 0 AND p.partecipante.email = :email
+""")
+    List<Evento> findPrivatiByPartecipante(@Param("email") String email);
     Boolean existsByInvito(String invito);
 }
