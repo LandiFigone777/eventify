@@ -26,6 +26,10 @@ public class PartecipazioneService {
       return partecipazioneRepository.save(partecipazione);
    }
 
+   public void delete(Partecipazione partecipazione){
+        partecipazioneRepository.delete(partecipazione);
+   }
+
    public Partecipazione getPartecipazioneByEventoAndPartecipante(Evento evento, Utente partecipante) {
         return partecipazioneRepository.getPartecipazioneByEventoAndPartecipante(evento, partecipante);
    }

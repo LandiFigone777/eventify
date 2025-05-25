@@ -14,9 +14,10 @@
       <div class="col-md-6">
         <input type="datetime-local" name="dataOraFine" class="form-control" required>
       </div>
-      <div class="col-md-8">
-        <input type="text" id="indirizzo" name="indirizzo" class="form-control" placeholder="Indirizzo" oninput="autocompleteAddress()" required>      </div>
-      <ul id="suggestions" class="list-group mt-2" style="display: none; position: absolute; z-index: 1000;"></ul>
+      <div class="col-md-8 position-relative">
+        <input type="text" id="indirizzo" name="indirizzo" class="form-control" placeholder="Indirizzo" oninput="autocompleteAddress()" required>
+        <ul id="suggestions" class="list-group mt-2" style="display: none;"></ul>
+      </div>
       <div class="col-md-4">
         <input type="number" name="numCivico" class="form-control" placeholder="Numero civico" required>
       </div>

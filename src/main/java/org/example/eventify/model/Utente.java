@@ -27,11 +27,9 @@ public class Utente {
     private String password;
     private String nome;
     private String cognome;
+    private String stato;
     @Column(name = "data_nascita")
     private LocalDate dataNascita;
-    private String stato;
-    private String indirizzo;
-    @Column(name = "num_civico")
-    private String numeroCivico;
+    private String citta;
     private String verificationCode;
 }

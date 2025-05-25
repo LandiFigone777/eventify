@@ -35,6 +35,9 @@ public class UtenteController {
 
         boolean isFollowing;
         if (loggedUser != null) {
+            if(!loggedUser.getStato().equals("VERIFICATO")){
+                return "redirect:/verify";
+            }
             isFollowing = followersService.isFollowing(loggedUser, utente);
         }
         else {
@@ -47,7 +50,7 @@ public class UtenteController {
         model.addAttribute("followingNumber", followersService.followingNumber(utente));
 
         if (loggedUser.getEmail().equals(utente.getEmail())) {
-            model.addAttribute("eventi", eventoService.getByOrganizzatore(utente));
+            return "profile";
         } else {
             model.addAttribute("eventi", eventoService.getPublicEventsByOrganizzatore(utente));
         }
@@ -60,6 +63,9 @@ public class UtenteController {
         Utente currentUser = (Utente) session.getAttribute("user");
         if (currentUser == null) {
             return "redirect:/login";
+        }
+        if(!currentUser.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
         }
 
         Utente followed = utenteService.findById(followedEmail);
@@ -92,6 +98,9 @@ public class UtenteController {
         if (utente == null) {
             return "redirect:/home?msg=Utente non trovato";
         }
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
 
         List<Followers> followersList = followersService.findAllFollowersByFollowed(utente);
         List<Utente> followersListModel = new ArrayList<>();
@@ -102,6 +111,7 @@ public class UtenteController {
         }
 
         model.addAttribute("followers", followersListModel);
+        model.addAttribute("utente", utente.getUsername());
 
         return "followers";
     }
@@ -111,6 +121,9 @@ public class UtenteController {
         Utente utente = utenteService.findByUsername(username);
         if (utente == null) {
             return "redirect:/home?msg=Utente non trovato";
+        }
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
         }
 
         List<Followers> followingList = followersService.findAllFollowersByFollowing(utente);
@@ -122,6 +135,7 @@ public class UtenteController {
         }
 
         model.addAttribute("following", followingListModel);
+        model.addAttribute("utente", utente.getUsername());
 
         return "following";
     }
@@ -131,6 +145,9 @@ public class UtenteController {
         Utente loggedUser = (Utente) session.getAttribute("user");
         if (loggedUser == null) {
             return "redirect:/login";
+        }
+        if(!loggedUser.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
         }
 
         List<Utente> allUtenti = utenteService.findAll();

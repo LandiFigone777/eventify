@@ -12,8 +12,9 @@
       <li class="list-group-item"><strong>Nome:</strong> <span th:text="${utente.nome}"></span></li>
       <li class="list-group-item"><strong>Cognome:</strong> <span th:text="${utente.cognome}"></span></li>
       <li class="list-group-item"><strong>Data di nascita:</strong> <span th:text="${#temporals.format(utente.dataNascita, 'dd/MM/yyyy')}"></span></li>
-      <li class="list-group-item"><strong>Stato:</strong> <span th:text="${utente.stato}"></span></li>
-      <li class="list-group-item"><strong>Indirizzo:</strong> <span th:text="${utente.indirizzo} + ', ' + ${utente.numeroCivico}"></span></li>
+      <li class="list-group-item"><strong>Città di residenza:</strong> <span th:text="${utente.citta}"></span></li>
+      <li class="list-group-item"><a th:href="'/user/' + ${utente.username} + '/followers'"><strong>Followers:</strong></a> <span th:text="${followersNumber}"></span></li>
+      <li class="list-group-item"><a th:href="'/user/' + ${utente.username} + '/following'"><strong>Seguiti:</strong></a> <span th:text="${followingNumber}"></span></li>
     </ul>
 
     <a href="/editProfile" class="btn btn-primary">Modifica Profilo</a>

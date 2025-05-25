@@ -13,6 +13,7 @@ import org.example.eventify.model.Evento;
 import org.example.eventify.model.Utente;
 import org.example.eventify.service.EmailService;
 import org.example.eventify.service.EventoService;
+import org.example.eventify.service.FollowersService;
 import org.example.eventify.service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,10 @@ public class MainController {
     private EmailService emailService;
     @Autowired
     private EventoService eventoService;
+    @Autowired
+    private FollowersService followersService;
+    @Autowired
+    private HttpSession httpSession;
 
 
     @GetMapping("/")
@@ -48,6 +53,11 @@ public class MainController {
         List<String> usernames = new ArrayList<>();
 
         if (utente != null) {
+
+            if(!utente.getStato().equals("VERIFICATO")){
+                return "redirect:/verify";
+            }
+
             model.addAttribute("utente", utente);
 
             List<Evento> eventiHomeObj = new ArrayList<>();
@@ -125,16 +135,18 @@ public class MainController {
 
     @PostMapping("/register")
     public String register(
-            @RequestParam String nome,
-            @RequestParam String cognome,
-            @RequestParam String username,
-            @RequestParam String dataNascita,
-            @RequestParam String indirizzo,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String confirmPassword,
+            @RequestBody Map<String, String> requestData,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
+
+        String nome = requestData.get("nome");
+        String cognome = requestData.get("cognome");
+        String username = requestData.get("username");
+        String dataNascita = requestData.get("dataNascita");
+        String citta = requestData.get("citta");
+        String email = requestData.get("email");
+        String password = requestData.get("password");
+        String confirmPassword = requestData.get("confirmPassword");
 
         if (session.getAttribute("user") != null) {
             redirectAttributes.addFlashAttribute("msg", "Sei già loggato");
@@ -157,7 +169,7 @@ public class MainController {
             utente.setCognome(cognome);
             utente.setUsername(username);
             utente.setDataNascita(LocalDate.parse(dataNascita));
-            utente.setIndirizzo(indirizzo);
+            utente.setCitta(citta);
             utente.setEmail(email);
             utente.setPassword(Utils.hashPassword(password));
 
@@ -182,8 +194,13 @@ public class MainController {
         if (utenteLoggato == null) {
             return "redirect:/login";
         }
+        if(!utenteLoggato.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
         model.addAttribute("utente", utenteLoggato);
         model.addAttribute("activePage", "profile");
+        model.addAttribute("followersNumber", followersService.followersNumber(utenteLoggato));
+        model.addAttribute("followingNumber", followersService.followingNumber(utenteLoggato));
         return "profile";
     }
 
@@ -192,6 +209,9 @@ public class MainController {
         Utente utenteLoggato = (Utente) session.getAttribute("user");
         if (utenteLoggato == null) {
             return "redirect:/login";
+        }
+        if(!utenteLoggato.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
         }
         model.addAttribute("utente", utenteLoggato);
         model.addAttribute("activePage", "profile");
@@ -203,8 +223,7 @@ public class MainController {
             @RequestParam String nome,
             @RequestParam String cognome,
             @RequestParam String dataNascita,
-            @RequestParam String indirizzo,
-            @RequestParam String numeroCivico,
+            @RequestParam String citta,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
@@ -212,12 +231,14 @@ public class MainController {
         if (utenteLoggato == null) {
             return "redirect:/login";
         }
+        if(!utenteLoggato.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
 
         utenteLoggato.setNome(nome);
         utenteLoggato.setCognome(cognome);
         utenteLoggato.setDataNascita(LocalDate.parse(dataNascita));
-        utenteLoggato.setIndirizzo(indirizzo);
-        utenteLoggato.setNumeroCivico(numeroCivico);
+        utenteLoggato.setCitta(citta);
 
         utenteService.save(utenteLoggato);
         session.setAttribute("user", utenteLoggato);
@@ -226,29 +247,30 @@ public class MainController {
         return "redirect:/profile";
     }
 
-
-    @GetMapping("/publicEvents")
-    public String publicEvents(Model model) {
-        List<Evento> eventiPubblici = eventoService.getByVisibilita(1);
-        model.addAttribute("eventiPubblici", eventiPubblici);
-
-        return "publicEvents";
-    }
-
     @GetMapping("/verify")
-    public String verifyForm(Model model) {
-        Utente utente = new Utente();
+    public String verifyForm(Model model, HttpSession session) {
+        Utente utente = (Utente) session.getAttribute("user");
         model.addAttribute("utente", utente);
         return "verify";
     }
 
     @PostMapping("/verify")
-    public String verify(@RequestParam("code") String code, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String verify(@RequestParam("digit1") String digit1,
+                         @RequestParam("digit2") String digit2,
+                         @RequestParam("digit3") String digit3,
+                         @RequestParam("digit4") String digit4,
+                         @RequestParam("digit5") String digit5,
+                         @RequestParam("digit6") String digit6,
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session) {
+
+        String code = digit1 + digit2 + digit3 + digit4 + digit5 + digit6;
+
         System.out.println("Verification code: " + code);
         System.out.println("User verification code: " + ((Utente) session.getAttribute("user")).getVerificationCode());
         if(((Utente) session.getAttribute("user")).getVerificationCode().equals(code)) {
             Utente utente = (Utente) session.getAttribute("user");
-            utente.setStato("VERIFICATO"); // ma quindi lo stato non è da dove viene? ma è uno stato
+            utente.setStato("VERIFICATO");
             utenteService.save(utente);
             return "redirect:/home";
         } else {
@@ -266,6 +288,13 @@ public class MainController {
         List<Map<String, String>> results = new ArrayList<>();
         Utente utenteLoggato = (Utente) session.getAttribute("user");
         model.addAttribute("utente", utenteLoggato);
+
+        if(utenteLoggato == null) {
+            return "redirect:/login";
+        }
+        if(!utenteLoggato.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
 
         if (searchType.equals("user")) {
             // Cerca utenti

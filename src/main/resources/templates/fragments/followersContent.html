@@ -1,6 +1,6 @@
 <div th:fragment="content">
   <div class="container mt-4">
-    <h2>Utenti Follower</h2>
+    <h2 th:text="'Followers di ' + ${utente}"></h2>
     <table class="table">
       <thead>
       <tr>

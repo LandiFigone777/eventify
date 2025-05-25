@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `eventi_preferiti` (
   KEY `FK__utente` (`email`),
   CONSTRAINT `FK__evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK__utente` FOREIGN KEY (`email`) REFERENCES `utente` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `evento` (
   PRIMARY KEY (`id_evento`),
   KEY `creatore` (`creatore`),
   CONSTRAINT `fk_evento_creatore` FOREIGN KEY (`creatore`) REFERENCES `utente` (`email`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `followers` (
   KEY `followed` (`followed`),
   CONSTRAINT `fk_followers_followed` FOREIGN KEY (`followed`) REFERENCES `utente` (`email`) ON DELETE CASCADE,
   CONSTRAINT `fk_followers_follower` FOREIGN KEY (`follower`) REFERENCES `utente` (`email`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `immagini_evento` (
   PRIMARY KEY (`id_immagine`),
   KEY `id_evento` (`id_evento`),
   CONSTRAINT `fk_immagini_evento_id_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `invito` (
   KEY `FK_inviti_evento` (`id_evento`),
   CONSTRAINT `FK_inviti_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_inviti_utente` FOREIGN KEY (`id_invitato`) REFERENCES `utente` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `partecipazione` (
   KEY `fk_partecipazione_id_evento` (`id_evento`),
   CONSTRAINT `fk_partecipazione_email` FOREIGN KEY (`email`) REFERENCES `utente` (`email`) ON DELETE CASCADE,
   CONSTRAINT `fk_partecipazione_id_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -118,9 +118,8 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `cognome` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `data_nascita` date DEFAULT NULL,
+  `citta` varchar(255) DEFAULT NULL,
   `stato` varchar(255) DEFAULT NULL,
-  `indirizzo` varchar(255) DEFAULT NULL,
-  `num_civico` varchar(255) DEFAULT NULL,
   `verificationCode` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`email`),
   UNIQUE KEY `username` (`username`)
@@ -133,14 +132,3 @@ CREATE TABLE IF NOT EXISTS `utente` (
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
--- Inserimento utenti di prova
-INSERT INTO `utente` (`email`, `username`, `nome`, `cognome`, `password`, `data_nascita`, `stato`,`indirizzo`, `num_civico` ,`verificationCode`) VALUES
-('a', 'a', 'a', 'a', 'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb', '2000-01-01', '1',NULL, NULL, NULL),
-('mario.rossi@example.com', 'mrossi', 'Mario', 'Rossi', 'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb', '1990-05-15', '10','Italia Milano Via Milano', 20110, NULL),
-('luca.bianchi@example.com', 'lbianchi', 'Luca', 'Bianchi', 'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb', '1985-08-20', '22','Italia Torino Corso Torino', 20001, NULL);
-
--- Inserimento eventi di prova
-INSERT INTO `evento` (`creatore`, `nome`, `data_ora_inizio`, `data_ora_fine`, `num_civico`, `tipo`, `visibilita`, `descrizione`, `costo`, `eta_minima`, `partecipanti_max`, `indirizzo`, `invito`) VALUES
-('a', 'Concerto Rock', '2025-06-01 20:00:00', '2025-06-01 23:00:00', '5', 'Musica', 1, 'Concerto rock con band locali', 20.00, 16, 100, 'Piazza del Rock', NULL),
-('mario.rossi@example.com', 'Corso di Cucina', '2025-06-05 18:00:00', '2025-06-05 21:00:00', '15', 'Corso', 1, 'Impara a cucinare piatti italiani', 35.00, 18, 20, 'Via Gusto', NULL),
-('luca.bianchi@example.com', 'Torneo di Calcio', '2025-06-10 10:00:00', '2025-06-10 18:00:00', '25', 'Sport', 1, 'Torneo amatoriale di calcio a 5', 0.00, 14, 50, 'Campo Sportivo Bianchi', NULL);

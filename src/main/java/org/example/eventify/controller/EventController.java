@@ -56,6 +56,9 @@ public class EventController {
         if (utente == null) {
             return "redirect:/login";
         }
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
         model.addAttribute("utente", utente);
         model.addAttribute("activePage", "addEvent");
         return "addEvent";
@@ -69,10 +72,13 @@ public class EventController {
                            @RequestParam String descrizione, @RequestParam Integer etaMinima,
                            @RequestParam Float costoIngresso,
                            @RequestParam Integer maxPartecipanti, @RequestParam List<MultipartFile> immagini, HttpSession session) {
-        if(session.getAttribute("user") == null) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if(utente == null) {
             return "redirect:/login";
         }
-        Utente utente = (Utente) session.getAttribute("user");
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
         Evento evento = new Evento();
         evento.setNome(nome);
         evento.setDataOraInizio(LocalDateTime.parse(dataOraInizio));
@@ -104,14 +110,18 @@ public class EventController {
     @GetMapping("yourEvents")
     public String yourEvents(HttpSession session, Model model) {
         Utente utente = (Utente) session.getAttribute("user");
-        if (utente != null) {
-            model.addAttribute("utente", utente);
-            List<Evento> eventi = eventoService.getByOrganizzatore(utente);
-            model.addAttribute("eventi", eventi);
-            return "yourCreations";
-        } else {
+
+        if(utente == null){
             return "redirect:/login";
         }
+
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
+        model.addAttribute("utente", utente);
+        List<Evento> eventi = eventoService.getByOrganizzatore(utente);
+        model.addAttribute("eventi", eventi);
+        return "yourCreations";
     }
 
     @PostMapping("/events/subscribe")
@@ -120,6 +130,9 @@ public class EventController {
         if (utente == null) {
             redirectAttributes.addFlashAttribute("error", "Utente non autenticato");
             return "redirect:/login";
+        }
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
         }
 
         Integer idEvento = (Integer) payload.get("idEvento");
@@ -130,7 +143,8 @@ public class EventController {
         }
 
         if (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null) {
-            redirectAttributes.addFlashAttribute("error", "Utente già iscritto all'evento");
+            Partecipazione disiscrizione = partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente);
+            partecipazioneService.delete(disiscrizione);
             return "redirect:/home";
         }
 
@@ -159,62 +173,75 @@ public class EventController {
     @GetMapping("/subscriptions")
     public String subscriptions(HttpSession session, Model model) {
         Utente utente = (Utente) session.getAttribute("user");
-        if (utente != null) {
-            model.addAttribute("utente", utente);
-            List<Partecipazione> partecipazioni = partecipazioneService.getPartecipazioneByPartecipante(utente);
-            List<Evento> eventiPartecipati = new ArrayList<>();
-            for(Partecipazione partecipazione : partecipazioni){
-                Evento evento = eventoService.findById(partecipazione.getEvento().getIdEvento());
-                eventiPartecipati.add(evento);
-            }
-            model.addAttribute("partecipazioni", eventiPartecipati);
-            return "subscriptions";
-        } else {
+
+        if(utente == null){
             return "redirect:/login";
         }
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
+        }
+
+        model.addAttribute("utente", utente);
+        List<Partecipazione> partecipazioni = partecipazioneService.getPartecipazioneByPartecipante(utente);
+        List<Evento> eventiPartecipati = new ArrayList<>();
+        for(Partecipazione partecipazione : partecipazioni){
+            Evento evento = eventoService.findById(partecipazione.getEvento().getIdEvento());
+            eventiPartecipati.add(evento);
+        }
+        model.addAttribute("partecipazioni", eventiPartecipati);
+        return "subscriptions";
     }
 
     @GetMapping("/event/{id}")
     public String showEvent(@PathVariable("id") Integer idEvento, @RequestParam(value = "invitation", required = false) String invito, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         Utente utente = (Utente) session.getAttribute("user");
-        if (utente != null) {
-            Evento evento = eventoService.findById(idEvento);
-            if(evento == null) {
-                redirectAttributes.addAttribute("msg", "Evento non trovato");
-                return "redirect:/home";
-            }
-            if(evento.getVisibilita() == 1){
-                return eventChecks(model, evento, utente, idEvento);
-            }
-            if(evento.getVisibilita() == 0 && evento.getOrganizzatore().getEmail().equals(utente.getEmail())){
-                return eventChecks(model, evento, utente, idEvento);
-            }
-            else if(evento.getVisibilita() == 0 && partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && invitoService.getInvitoByEventoAndInvitato(evento, utente) != null){
-                return eventChecks(model, evento, utente, idEvento);
-            }
-            else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && Objects.equals(evento.getInvito(), invito))){
-                if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && Objects.equals(evento.getInvito(), invito)){
-                    if(invitoService.getInvitoByEventoAndInvitato(evento, utente) == null) {
-                        Invito invito1 = new Invito();
-                        invito1.setEvento(evento);
-                        invito1.setInvitato(utente);
-                        invitoService.save(invito1);
-                    }
-                    // Crea la partecipazione
-                    Partecipazione partecipazione = new Partecipazione();
-                    partecipazione.setEvento(evento);
-                    partecipazione.setPartecipante(utente);
-                    partecipazioneService.save(partecipazione);
-                }
-                return eventChecks(model, evento, utente, idEvento);
-            }
-            else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null || !Objects.equals(evento.getInvito(), invito) || invitoService.getInvitoByEventoAndInvitato(evento, utente) == null)) {
-                redirectAttributes.addAttribute("msg", "Evento privato, non puoi visualizzarlo se non sei invitato o non sei l'organizzatore");
-                return "redirect:/home";
-            }
+
+        if(utente == null) {
+            redirectAttributes.addAttribute("msg", "Devi essere loggato per visualizzare gli eventi");
+            return "redirect:/login";
+        }
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
         }
 
-        return "redirect:/login";
+        Evento evento = eventoService.findById(idEvento);
+        if(evento == null) {
+            redirectAttributes.addAttribute("msg", "Evento non trovato");
+            return "redirect:/home";
+        }
+        if(evento.getVisibilita() == 1){
+            return eventChecks(model, evento, utente, idEvento);
+        }
+        if(evento.getVisibilita() == 0 && evento.getOrganizzatore().getEmail().equals(utente.getEmail())){
+            return eventChecks(model, evento, utente, idEvento);
+        }
+        else if(evento.getVisibilita() == 0 && partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && invitoService.getInvitoByEventoAndInvitato(evento, utente) != null){
+            return eventChecks(model, evento, utente, idEvento);
+        }
+        else if(evento.getVisibilita() == 0 && partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) != null && invitoService.getInvitoByEventoAndInvitato(evento, utente) != null){
+            return eventChecks(model, evento, utente, idEvento);
+        }
+        else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && Objects.equals(evento.getInvito(), invito))){
+            if(partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null && Objects.equals(evento.getInvito(), invito)){
+                if(invitoService.getInvitoByEventoAndInvitato(evento, utente) == null) {
+                    Invito invito1 = new Invito();
+                    invito1.setEvento(evento);
+                    invito1.setInvitato(utente);
+                    invitoService.save(invito1);
+                }
+                // Crea la partecipazione
+                Partecipazione partecipazione = new Partecipazione();
+                partecipazione.setEvento(evento);
+                partecipazione.setPartecipante(utente);
+                partecipazioneService.save(partecipazione);
+            }
+            return eventChecks(model, evento, utente, idEvento);
+        }
+        else if(evento.getVisibilita() == 0 && (partecipazioneService.getPartecipazioneByEventoAndPartecipante(evento, utente) == null || !Objects.equals(evento.getInvito(), invito) || invitoService.getInvitoByEventoAndInvitato(evento, utente) == null)) {
+            redirectAttributes.addAttribute("msg", "Evento privato, non puoi visualizzarlo se non sei invitato o non sei l'organizzatore");
+            return "redirect:/home";
+        }
+        return "redirect:/home";
     }
 
     @PostMapping("/likeEvent")
@@ -222,6 +249,9 @@ public class EventController {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente == null) {
             return "redirect:/login";
+        }
+        if(!utente.getStato().equals("VERIFICATO")){
+            return "redirect:/verify";
         }
         Evento evento = eventoService.findById(idEvento);
         if (evento != null) {
