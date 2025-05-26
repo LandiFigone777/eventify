@@ -145,6 +145,7 @@ public class MainController {
         String dataNascita = requestData.get("dataNascita");
         String citta = requestData.get("citta");
         String email = requestData.get("email");
+        String stato = "PENDING";
         String password = requestData.get("password");
         String confirmPassword = requestData.get("confirmPassword");
 
@@ -171,6 +172,7 @@ public class MainController {
             utente.setDataNascita(LocalDate.parse(dataNascita));
             utente.setCitta(citta);
             utente.setEmail(email);
+            utente.setStato(stato);
             utente.setPassword(Utils.hashPassword(password));
 
             // Generate verification code
@@ -250,6 +252,9 @@ public class MainController {
     @GetMapping("/verify")
     public String verifyForm(Model model, HttpSession session) {
         Utente utente = (Utente) session.getAttribute("user");
+        if (utente == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("utente", utente);
         return "verify";
     }
