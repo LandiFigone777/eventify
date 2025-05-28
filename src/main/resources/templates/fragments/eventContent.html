@@ -57,7 +57,7 @@
             </div>
             <div class="d-flex justify-content-end gap-2">
               <p th:if="${tooYoung}">Sei troppo giovane per iscriverti</p>
-              <a href="javascript:void(0);" id='partecipaButton' class="btn btn-primary btn-sm" th:href="${tooYoung} ? null" th:text="${partecipato} ? 'Disiscriviti' : 'Partecipa'" th:onclick="'subscribeToEvent(' + ${evento.idEvento} + ');'"></a>
+              <a href="javascript:void(0);" id='partecipaButton' class="btn btn-primary btn-sm" th:text="${partecipato} ? 'Disiscriviti' : 'Partecipa'" th:onclick="${tooYoung} ? null : 'subscribeToEvent(' + ${evento.idEvento} + ');'"></a>
               <div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
                 <span class="visually-hidden">Loading...</span>
               </div>
