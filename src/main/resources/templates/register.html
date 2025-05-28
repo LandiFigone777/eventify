@@ -76,20 +76,17 @@
 <script src="/toast.js"></script>
 <script>
     document.getElementById('registerForm').addEventListener('submit', function (event) {
-        event.preventDefault(); // Previene il comportamento predefinito del form
+        event.preventDefault();
 
         const registerButton = document.getElementById('registerButton');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
-        // Mostra lo spinner e disabilita il pulsante
         registerButton.style.display = 'none';
         loadingSpinner.style.display = 'inline-block';
 
-        // Raccogli i dati del form
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
 
-        // Invia la richiesta al server
         fetch('/register', {
             method: 'POST',
             headers: {
@@ -99,7 +96,9 @@
         })
             .then(response => {
                 if (response.ok) {
-                    // Redirezione in caso di successo
+                    if(data.password !== data.confirmPassword) {
+                        throw new Error('Le password non corrispondono');
+                    }
                     window.location.href = '/verify';
                 } else {
                     return response.json().then(err => {
@@ -112,7 +111,6 @@
                 alert(error.message);
             })
             .finally(() => {
-                // Nascondi lo spinner e riabilita il pulsante in caso di errore
                 loadingSpinner.style.display = 'none';
                 registerButton.style.display = 'inline-block';
             });
