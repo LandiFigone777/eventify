@@ -15,7 +15,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dump della struttura del database eventify
+DROP DATABASE IF EXISTS eventify;
 CREATE DATABASE IF NOT EXISTS `eventify` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `eventify`;
 
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `eventi_preferiti` (
   KEY `FK__utente` (`email`),
   CONSTRAINT `FK__evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK__utente` FOREIGN KEY (`email`) REFERENCES `utente` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -37,22 +37,22 @@ CREATE TABLE IF NOT EXISTS `eventi_preferiti` (
 CREATE TABLE IF NOT EXISTS `evento` (
   `id_evento` int(11) NOT NULL AUTO_INCREMENT,
   `creatore` varchar(255) DEFAULT NULL,
-  `nome` varchar(255) DEFAULT NULL,
+  `nome` varchar(10000) DEFAULT NULL,
   `data_ora_inizio` datetime NOT NULL,
   `data_ora_fine` datetime NOT NULL,
   `num_civico` varchar(255) DEFAULT NULL,
-  `tipo` varchar(255) DEFAULT NULL,
+  `tipo` varchar(10000) DEFAULT NULL,
   `visibilita` int(11) DEFAULT NULL,
-  `descrizione` varchar(255) DEFAULT NULL,
+  `descrizione` text DEFAULT NULL,
   `costo` float DEFAULT NULL,
   `eta_minima` tinyint(5) NOT NULL,
   `partecipanti_max` mediumint(9) NOT NULL DEFAULT 0,
-  `indirizzo` varchar(255) DEFAULT NULL,
+  `indirizzo` text DEFAULT NULL,
   `invito` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_evento`),
   KEY `creatore` (`creatore`),
   CONSTRAINT `fk_evento_creatore` FOREIGN KEY (`creatore`) REFERENCES `utente` (`email`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `partecipazione` (
   KEY `fk_partecipazione_id_evento` (`id_evento`),
   CONSTRAINT `fk_partecipazione_email` FOREIGN KEY (`email`) REFERENCES `utente` (`email`) ON DELETE CASCADE,
   CONSTRAINT `fk_partecipazione_id_evento` FOREIGN KEY (`id_evento`) REFERENCES `evento` (`id_evento`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- L’esportazione dei dati non era selezionata.
 
