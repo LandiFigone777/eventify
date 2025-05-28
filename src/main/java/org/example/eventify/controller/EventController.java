@@ -142,6 +142,11 @@ public class EventController {
         Integer idEvento = (Integer) payload.get("idEvento");
         Evento evento = eventoService.findById(idEvento);
 
+        if(utente.getUsername().equals(evento.getOrganizzatore().getUsername())) {
+            redirectAttributes.addFlashAttribute("error", "Non puoi iscriverti al tuo stesso evento");
+            return "redirect:/home";
+        }
+
         if(Utils.calcolaEta(utente.getDataNascita()) < evento.getEtaMinima()){
             redirectAttributes.addAttribute("msg", "Sei troppo piccolo per iscriverti all'evento");
             return "redirect:/home";
@@ -250,30 +255,31 @@ public class EventController {
     }
 
     @PostMapping("/likeEvent")
-    public String likeEvent(@RequestParam Integer idEvento, @RequestParam String like, HttpSession session, Model model) {
+    public String likeEvent(@RequestParam Integer idEvento, HttpSession session, Model model) {
         Utente utente = (Utente) session.getAttribute("user");
         if (utente == null) {
             return "redirect:/login";
         }
-        if(!utente.getStato().equals("VERIFICATO")){
+        if (!utente.getStato().equals("VERIFICATO")) {
             return "redirect:/verify";
         }
         Evento evento = eventoService.findById(idEvento);
         if (evento != null) {
-            if(like.equals("NON HAI MESSO MI PIACE")) {
-                EventiPreferiti likeEvento = new EventiPreferiti();
+            EventiPreferiti likeEvento = eventiPreferitiService.getByLikerAndEvento(utente, evento);
+            if (likeEvento == null) {
+                // Metti like
+                likeEvento = new EventiPreferiti();
                 likeEvento.setLiker(utente);
                 likeEvento.setEvento(evento);
                 eventiPreferitiService.save(likeEvento);
                 model.addAttribute("liked", true);
             } else {
-                EventiPreferiti likeEvento = eventiPreferitiService.getByLikerAndEvento(utente, evento);
+                // Togli like
                 eventiPreferitiService.delete(likeEvento);
                 model.addAttribute("liked", false);
             }
-            // Add the evento object to the model
             model.addAttribute("evento", evento);
-            model.addAttribute("likesNumber" , eventiPreferitiService.countAllByEvento(evento));
+            model.addAttribute("likesNumber", eventiPreferitiService.countAllByEvento(evento));
         }
         return "fragments/like :: like";
     }
@@ -317,6 +323,12 @@ public class EventController {
         }
         else{
             model.addAttribute("tooYoung", false);
+        }
+
+        if(partecipazioneService.countPartecipazioneByEvento(evento) >= evento.getMaxPartecipanti()) {
+            model.addAttribute("full", true);
+        } else {
+            model.addAttribute("full", false);
         }
 
         if(eventoService.findById(idEvento).getOrganizzatore().getEmail().equals(utente.getEmail())) {

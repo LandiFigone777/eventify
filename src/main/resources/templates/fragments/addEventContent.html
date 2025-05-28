@@ -14,6 +14,7 @@
       <div class="col-md-6">
         <input type="datetime-local" id="dataFine" oninput="checkDates()" name="dataOraFine" class="form-control" required>
       </div>
+      <span id="dateError" class="text-danger" style="display:none;"></span>
       <div class="col-md-8 position-relative">
         <input type="text" id="indirizzo" name="indirizzo" class="form-control" placeholder="Indirizzo" oninput="autocompleteAddress()" required>
         <ul id="suggestions" class="list-group mt-2" style="display: none;"></ul>

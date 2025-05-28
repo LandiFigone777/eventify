@@ -12,4 +12,5 @@ import java.util.List;
 public interface PartecipazioneRepository extends JpaRepository<Partecipazione, Integer> {
     Partecipazione getPartecipazioneByEventoAndPartecipante(Evento evento, Utente partecipante);
     List<Partecipazione> getPartecipazioneByPartecipante(Utente partecipante);
+    Integer countPartecipazioneByEvento(Evento evento);
 }

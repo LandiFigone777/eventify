@@ -14,17 +14,38 @@
 <body>
 
 <script>
-    function checkDates(){
+    function checkDates() {
         const inizio = document.getElementById('dataInizio').value;
         const fine = document.getElementById('dataFine').value;
+        const error = document.getElementById('dateError');
         const butt = document.getElementById('buttonEvent');
 
-        console.log(inizio);
+        let inizioDate = inizio ? new Date(inizio) : null;
+        let fineDate = fine ? new Date(fine) : null;
+        let now = new Date();
 
-        let inizioDate = new Date(inizio);
-        let fineDate = new Date(fine);
+        let valid = true;
+        let msg = "";
 
-        butt.disabled = inizioDate >= fineDate;
+        if (inizioDate && fineDate) {
+            if (fineDate <= inizioDate) {
+                valid = false;
+                msg = "La data di fine deve essere dopo l'inizio.";
+            } else if (inizioDate < now || fineDate < now) {
+                valid = false;
+                msg = "Le date non possono essere nel passato.";
+            }
+        }
+
+        if (!valid) {
+            error.style.display = 'inline';
+            error.innerText = msg;
+            butt.disabled = true;
+        } else {
+            error.style.display = 'none';
+            error.innerText = "";
+            butt.disabled = false;
+        }
     }
 </script>
 

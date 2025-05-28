@@ -1,11 +1,15 @@
-<div th:fragment="like" class="like-container">
+<!-- src/main/resources/templates/fragments/like.html -->
+<div th:fragment="like" class="like-container d-flex align-items-center">
     <form id="like-container"
           hx-post="/likeEvent"
           hx-include="[name='idEvento']"
           hx-target="#like-container"
-          hx-swap="outerHTML">
-        <input type="submit" id="like" name="like" th:value="${liked ? 'HAI MESSO MI PIACE' : 'NON HAI MESSO MI PIACE'}" class="like-button">
+          hx-swap="outerHTML"
+          class="d-flex align-items-center m-0">
+        <button type="submit" id="like" name="like" class="like-button btn btn-link p-0" style="font-size: 2rem;">
+            <i th:class="'bi ' + (${liked} ? 'bi-heart-fill text-danger' : 'bi-heart text-danger')" style="font-size: 2rem;"></i>
+        </button>
         <input type="hidden" name="idEvento" th:value="${evento.idEvento}">
-        <p class="like-count" th:text="${likesNumber} + ' like totali'"></p>
+        <span class="like-count ms-2" style="font-size: 1.5rem;" th:text="${likesNumber}"></span>
     </form>
 </div>

@@ -55,9 +55,12 @@
                 <i class="bi bi-clipboard"></i> Copia link invito
               </button>
             </div>
+            <p th:if="${(isOwner or tooYoung or full) and !partecipato}">⚠️ Impossibile iscriversi all'evento, dato che:</p>
+            <p th:if="${isOwner and !partecipato}">• Non puoi iscriverti a un evento creato da te</p>
+            <p th:if="${tooYoung and !partecipato}">• Sei troppo giovane per iscriverti</p>
+            <p th:if="${full and !partecipato}">• Numero massimo di iscritti raggiunto</p>
             <div class="d-flex justify-content-end gap-2">
-              <p th:if="${tooYoung}">Sei troppo giovane per iscriverti</p>
-              <a href="javascript:void(0);" id='partecipaButton' class="btn btn-primary btn-sm" th:text="${partecipato} ? 'Disiscriviti' : 'Partecipa'" th:onclick="${tooYoung} ? null : 'subscribeToEvent(' + ${evento.idEvento} + ');'"></a>
+              <a href="javascript:void(0);" id='partecipaButton' th:if="${(!isOwner and !tooYoung and !full) or partecipato}" class="btn btn-primary btn-sm" th:text="${partecipato} ? 'Disiscriviti' : 'Partecipa'" th:onclick="'subscribeToEvent(' + ${evento.idEvento} + ');'"></a>
               <div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
                 <span class="visually-hidden">Loading...</span>
               </div>
