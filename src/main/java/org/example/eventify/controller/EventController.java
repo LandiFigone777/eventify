@@ -71,7 +71,7 @@ public class EventController {
                            @RequestParam String tipo, @RequestParam String visibilita,
                            @RequestParam String descrizione, @RequestParam Integer etaMinima,
                            @RequestParam Float costoIngresso,
-                           @RequestParam Integer maxPartecipanti, @RequestParam List<MultipartFile> immagini, HttpSession session) {
+                           @RequestParam Integer maxPartecipanti, HttpSession session) {
         Utente utente = (Utente) session.getAttribute("user");
         if(utente == null) {
             return "redirect:/login";
@@ -84,7 +84,12 @@ public class EventController {
         evento.setDataOraInizio(LocalDateTime.parse(dataOraInizio));
         evento.setDataOraFine(LocalDateTime.parse(dataOraFine));
         evento.setIndirizzo(indirizzo);
-        evento.setNumeroCivico(numCivico);
+        if(numCivico.isEmpty()){
+            evento.setNumeroCivico(null);
+        }
+        else {
+            evento.setNumeroCivico(numCivico);
+        }
         evento.setTipo(tipo);
         if(visibilita.equals("pubblico")) {
             visibilita = "1";
@@ -103,7 +108,6 @@ public class EventController {
         evento.setMaxPartecipanti(maxPartecipanti);
         evento.setOrganizzatore(utente);
         eventoService.save(evento);
-        addImages(immagini, evento);
         return "redirect:/home";
     }
 
@@ -137,8 +141,9 @@ public class EventController {
 
         Integer idEvento = (Integer) payload.get("idEvento");
         Evento evento = eventoService.findById(idEvento);
-        if (evento == null) {
-            redirectAttributes.addFlashAttribute("error", "Evento non trovato");
+
+        if(Utils.calcolaEta(utente.getDataNascita()) < evento.getEtaMinima()){
+            redirectAttributes.addAttribute("msg", "Sei troppo piccolo per iscriverti all'evento");
             return "redirect:/home";
         }
 
@@ -305,6 +310,13 @@ public class EventController {
             model.addAttribute("partecipato", true);
         } else {
             model.addAttribute("partecipato", false);
+        }
+
+        if(eventoService.findById(idEvento).getEtaMinima() > Utils.calcolaEta(utente.getDataNascita())){
+            model.addAttribute("tooYoung", true);
+        }
+        else{
+            model.addAttribute("tooYoung", false);
         }
 
         if(eventoService.findById(idEvento).getOrganizzatore().getEmail().equals(utente.getEmail())) {

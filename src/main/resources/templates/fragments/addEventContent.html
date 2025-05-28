@@ -9,17 +9,17 @@
         <input type="text" name="tipo" class="form-control" placeholder="Tipo (festa, sagra...)" required>
       </div>
       <div class="col-md-6">
-        <input type="datetime-local" name="dataOraInizio" class="form-control" required>
+        <input type="datetime-local" id="dataInizio" oninput="checkDates()" name="dataOraInizio" class="form-control" required>
       </div>
       <div class="col-md-6">
-        <input type="datetime-local" name="dataOraFine" class="form-control" required>
+        <input type="datetime-local" id="dataFine" oninput="checkDates()" name="dataOraFine" class="form-control" required>
       </div>
       <div class="col-md-8 position-relative">
         <input type="text" id="indirizzo" name="indirizzo" class="form-control" placeholder="Indirizzo" oninput="autocompleteAddress()" required>
         <ul id="suggestions" class="list-group mt-2" style="display: none;"></ul>
       </div>
       <div class="col-md-4">
-        <input type="number" name="numCivico" class="form-control" placeholder="Numero civico" required>
+        <input type="number" name="numCivico" class="form-control" placeholder="Numero civico" min="1">
       </div>
       <div class="col-md-6">
         <select name="visibilita" class="form-select" required>
@@ -31,19 +31,16 @@
         <input type="text" name="descrizione" class="form-control" placeholder="Descrizione" required>
       </div>
       <div class="col-md-6">
-        <input type="number" name="etaMinima" class="form-control" placeholder="Età minima" required>
+        <input type="number" name="etaMinima" class="form-control" placeholder="Età minima" min="0" required>
       </div>
       <div class="col-md-6">
-        <input type="number" name="maxPartecipanti" class="form-control" placeholder="Partecipanti max" required>
+        <input type="number" name="maxPartecipanti" class="form-control" min="1" placeholder="Partecipanti max" required>
       </div>
       <div class="col-md-6">
-        <input type="text" name="costoIngresso" class="form-control" placeholder="Costo ingresso (€)">
-      </div>
-      <div class="col-md-6">
-        <input type="file" name="immagini" class="form-control" multiple>
+        <input type="text" name="costoIngresso" class="form-control" min="0" placeholder="Costo ingresso (€)">
       </div>
       <div class="col-12 text-end">
-        <button type="submit" class="btn btn-primary">Salva evento</button>
+        <button type="submit" id="buttonEvent" class="btn btn-primary">Salva evento</button>
       </div>
     </form>
     <div id="map" style="height: 400px;" class="mt-4 rounded border"></div>

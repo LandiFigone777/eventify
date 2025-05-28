@@ -3,6 +3,8 @@ package org.example.eventify;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -60,5 +62,13 @@ public class Utils {
             list.add(item.trim());
         }
         return list;
+    }
+
+    public static int calcolaEta(LocalDate dataNascita) {
+
+        LocalDate dataAttuale = LocalDate.now();
+
+        Period periodo = Period.between(dataNascita, dataAttuale);
+        return periodo.getYears();
     }
 }

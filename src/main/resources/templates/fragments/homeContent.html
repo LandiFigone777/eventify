@@ -1,6 +1,7 @@
 <div th:fragment="content">
 
-    <h2>Eventi pubblici in ordine prima di seguiti e poi di popolarità</h2>
+    <h2>Home</h2>
+    <h5><span style="color: #808080;">Eventi pubblici in ordine prima di seguiti e poi di popolarità</span></h5>
     <div class="d-flex justify-content-end mb-3">
         <form th:action="@{/home}" method="get" class="d-flex">
             <input type="text" name="search" class="form-control me-2" placeholder="Cerca eventi...">
@@ -17,7 +18,7 @@
                             <p class="card-text" th:text="${#strings.length(evento.descrizione) > 30 ? evento.descrizione.substring(0, 30) + '...' : evento.descrizione}">Descrizione...</p>
                             <p class="mb-1">
                                 <i class="bi bi-geo-alt-fill"></i>
-                                <span th:text="${evento.indirizzo + ' ' + evento.numeroCivico}">Indirizzo</span>
+                                <span th:text="${evento.indirizzo}">Indirizzo</span>
                             </p>
                             <p class="mb-1">
                                 <i class="bi bi-people-fill"></i>

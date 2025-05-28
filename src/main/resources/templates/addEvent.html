@@ -12,6 +12,23 @@
     <link rel="stylesheet" href="/custom.css">
 </head>
 <body>
+
+<script>
+    function checkDates(){
+        const inizio = document.getElementById('dataInizio').value;
+        const fine = document.getElementById('dataFine').value;
+        const butt = document.getElementById('buttonEvent');
+
+        console.log(inizio);
+
+        let inizioDate = new Date(inizio);
+        let fineDate = new Date(fine);
+
+        butt.disabled = inizioDate >= fineDate;
+    }
+</script>
+
+
 <div th:replace="~{fragments/navbar :: navbar(content=~{fragments/addEventContent :: content}, activePage='addEvent')}"></div><br>
 
 

@@ -12,7 +12,8 @@
           </h6>
           <p class="mb-1">
             <i class="bi bi-geo-alt-fill"></i>
-            <span th:text="${evento.indirizzo + ' ' + evento.numeroCivico}">Indirizzo</span>
+            <span th:text="${evento.indirizzo}">Indirizzo</span><br>
+            <span th:if="${evento.numeroCivico}" th:text="'Numero civico: ' + ${evento.numeroCivico}">Indirizzo</span>
           </p>
           <p class="mb-1">
             <i class="bi bi-people-fill"></i>
@@ -55,7 +56,8 @@
               </button>
             </div>
             <div class="d-flex justify-content-end gap-2">
-              <a href="javascript:void(0);" id='partecipaButton' class="btn btn-primary btn-sm" th:text="${partecipato} ? 'Disiscriviti' : 'Partecipa'" th:onclick="'subscribeToEvent(' + ${evento.idEvento} + ');'"></a>
+              <p th:if="${tooYoung}">Sei troppo giovane per iscriverti</p>
+              <a href="javascript:void(0);" id='partecipaButton' class="btn btn-primary btn-sm" th:href="${tooYoung} ? null" th:text="${partecipato} ? 'Disiscriviti' : 'Partecipa'" th:onclick="'subscribeToEvent(' + ${evento.idEvento} + ');'"></a>
               <div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
                 <span class="visually-hidden">Loading...</span>
               </div>
