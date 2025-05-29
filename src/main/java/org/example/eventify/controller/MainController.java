@@ -162,9 +162,19 @@ public class MainController {
             return "redirect:/register?error=PasswordMismatch";
         }
 
-        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) { // Controllo validità email
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             redirectAttributes.addFlashAttribute("msg", "Email non valida");
             return "redirect:/register";
+        }
+
+        if(utenteService.findById(email) != null) {
+            redirectAttributes.addFlashAttribute("msg", "Email già in uso");
+            return "redirect:/register?error=EmailInUse";
+        }
+
+        if(utenteService.findByUsername(username) != null) {
+            redirectAttributes.addFlashAttribute("msg", "Username già in uso");
+            return "redirect:/register?error=UsernameInUse";
         }
 
         try {
