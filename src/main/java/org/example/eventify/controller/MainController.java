@@ -127,7 +127,10 @@ public class MainController {
     }
 
     @GetMapping("/register")
-    public String registerForm(Model model) {
+    public String registerForm(Model model, HttpSession session) {
+        if(session.getAttribute("user") != null) {
+            return "redirect:/home";
+        }
         Utente utente = new Utente();
         model.addAttribute("utente", utente);
         return "register";
