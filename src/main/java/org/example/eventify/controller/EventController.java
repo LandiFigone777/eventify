@@ -318,6 +318,12 @@ public class EventController {
             model.addAttribute("partecipato", false);
         }
 
+        if(evento.getDataOraFine().isBefore(LocalDateTime.now())) {
+            model.addAttribute("finito", true);
+        } else {
+            model.addAttribute("finito", false);
+        }
+
         if(eventoService.findById(idEvento).getEtaMinima() > Utils.calcolaEta(utente.getDataNascita())){
             model.addAttribute("tooYoung", true);
         }

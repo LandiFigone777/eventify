@@ -3,42 +3,53 @@
   <div class="card shadow-sm p-4">
     <form action="/addEvent" method="post" enctype="multipart/form-data" class="row g-3">
       <div class="col-md-6">
-        <input type="text" name="nome" class="form-control" placeholder="Nome evento" required>
+        <label for="nome" class="form-label">Nome evento</label>
+        <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome evento" required>
       </div>
       <div class="col-md-6">
-        <input type="text" name="tipo" class="form-control" placeholder="Tipo (festa, sagra...)" required>
+        <label for="tipo" class="form-label">Tipo</label>
+        <input type="text" id="tipo" name="tipo" class="form-control" placeholder="Tipo (festa, sagra...)" required>
       </div>
       <div class="col-md-6">
+        <label for="dataInizio" class="form-label">Data e ora inizio</label>
         <input type="datetime-local" id="dataInizio" oninput="checkDates()" name="dataOraInizio" class="form-control" required>
       </div>
       <div class="col-md-6">
+        <label for="dataFine" class="form-label">Data e ora fine</label>
         <input type="datetime-local" id="dataFine" oninput="checkDates()" name="dataOraFine" class="form-control" required>
       </div>
       <span id="dateError" class="text-danger" style="display:none;"></span>
       <div class="col-md-8 position-relative">
+        <label for="indirizzo" class="form-label">Indirizzo</label>
         <input type="text" id="indirizzo" name="indirizzo" class="form-control" placeholder="Indirizzo" oninput="autocompleteAddress()" required>
         <ul id="suggestions" class="list-group mt-2" style="display: none;"></ul>
       </div>
       <div class="col-md-4">
-        <input type="number" name="numCivico" class="form-control" placeholder="Numero civico" min="1">
+        <label for="numCivico" class="form-label">Numero civico</label>
+        <input type="number" id="numCivico" name="numCivico" class="form-control" placeholder="Numero civico" min="1">
       </div>
       <div class="col-md-6">
-        <select name="visibilita" class="form-select" required>
+        <label for="visibilita" class="form-label">Visibilità</label>
+        <select id="visibilita" name="visibilita" class="form-select" required>
           <option value="pubblico">Pubblico</option>
           <option value="privato">Privato</option>
         </select>
       </div>
       <div class="col-md-6">
-        <input type="text" name="descrizione" class="form-control" placeholder="Descrizione" required>
+        <label for="etaMinima" class="form-label">Età minima</label>
+        <input type="number" id="etaMinima" name="etaMinima" class="form-control" placeholder="Età minima" min="0" max="150" required>
       </div>
       <div class="col-md-6">
-        <input type="number" name="etaMinima" class="form-control" placeholder="Età minima" min="0" required>
+        <label for="maxPartecipanti" class="form-label">Partecipanti max</label>
+        <input type="number" id="maxPartecipanti" name="maxPartecipanti" class="form-control" min="1" placeholder="Partecipanti max" required>
       </div>
       <div class="col-md-6">
-        <input type="number" name="maxPartecipanti" class="form-control" min="1" placeholder="Partecipanti max" required>
+        <label for="costoIngresso" class="form-label">Costo ingresso</label>
+        <input type="number" id="costoIngresso" name="costoIngresso" class="form-control" min="0" placeholder="Costo ingresso (€)">
       </div>
-      <div class="col-md-6">
-        <input type="text" name="costoIngresso" class="form-control" min="0" placeholder="Costo ingresso (€)">
+      <div class="col-md-12">
+        <label for="descrizione" class="form-label">Descrizione</label>
+        <textarea name="descrizione" id="descrizione" class="form-control" placeholder="Descrizione" rows="3" style="resize: vertical;" required></textarea>
       </div>
       <div class="col-12 text-end">
         <button type="submit" id="buttonEvent" class="btn btn-primary">Salva evento</button>
