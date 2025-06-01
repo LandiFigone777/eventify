@@ -93,12 +93,16 @@ public class UtenteController {
     }
 
     @GetMapping("/user/{username}/followers")
-    public String getFollowers(@PathVariable String username, Model model) {
+    public String getFollowers(@PathVariable String username, Model model, HttpSession session) {
         Utente utente = utenteService.findByUsername(username);
+        Utente loggedUser = (Utente) session.getAttribute("user");
         if (utente == null) {
             return "redirect:/home?msg=Utente non trovato";
         }
-        if(!utente.getStato().equals("VERIFICATO")){
+        if(loggedUser == null) {
+            return "redirect:/login";
+        }
+        if(!loggedUser.getStato().equals("VERIFICATO")){
             return "redirect:/verify";
         }
 
@@ -117,12 +121,16 @@ public class UtenteController {
     }
 
     @GetMapping("/user/{username}/following")
-    public String getFollowing(@PathVariable String username, Model model) {
+    public String getFollowing(@PathVariable String username, Model model, HttpSession session) {
         Utente utente = utenteService.findByUsername(username);
+        Utente loggedUser = (Utente) session.getAttribute("user");
         if (utente == null) {
             return "redirect:/home?msg=Utente non trovato";
         }
-        if(!utente.getStato().equals("VERIFICATO")){
+        if(loggedUser == null) {
+            return "redirect:/login";
+        }
+        if(!loggedUser.getStato().equals("VERIFICATO")){
             return "redirect:/verify";
         }
 

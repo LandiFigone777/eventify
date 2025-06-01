@@ -49,14 +49,14 @@ nav {
     background-color: #324e9d !important;
     color: #ffffff !important; /* Testo bianco */
     border-radius: 8px; /* Bordo arrotondato */
-    font-weight: bold;
-    pointer-events: none; /* Disabilita hover */
+    font-weight: lighter;
+    pointer-events: auto !important;
 }
 
 /* Disabilita il cambio colore al passaggio del mouse */
 .nav-link.active:hover {
     background-color: #324e9d !important;
-    color: #ffffff !important; /* Mantieni testo bianco */
+    color: #ffffff !important;
 }
 
 /* Sidebar styling */

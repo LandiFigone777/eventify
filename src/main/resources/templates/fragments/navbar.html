@@ -15,42 +15,42 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <a href="/home"
+        <a href="/home" onclick="location.reload()"
            class="nav-link"
            th:classappend="${activePage} == 'home' ? ' active fw-bold' : ' text-dark text-primary'">
                   <i class="bi bi-house-door-fill"></i> Home
         </a>
       </li>
       <li class="nav-item">
-        <a href="/addEvent"
+        <a href="/addEvent" onclick="location.reload()"
            class="nav-link"
            th:classappend="${activePage} == 'addEvent' ? ' active fw-bold' : ' text-dark text-primary'">
           <i class="bi bi-plus-circle"></i> Inserisci evento
         </a>
       </li>
       <li>
-        <a href="/yourEvents"
+        <a href="/yourEvents" onclick="location.reload()"
            class="nav-link"
            th:classappend="${activePage} == 'yourEvents' ? ' active fw-bold' : ' text-dark text-primary'">
           <i class="bi bi-calendar-check"></i> I tuoi eventi
         </a>
       </li>
       <li>
-        <a href="/subscriptions"
+        <a href="/subscriptions" onclick="location.reload()"
            class="nav-link"
            th:classappend="${activePage} == 'subscriptions' ? ' active fw-bold' : ' text-dark text-primary'">
           <i class="bi bi-person-check"></i> Iscrizioni
         </a>
       </li>
       <li>
-        <a href="/userSearch"
+        <a href="/userSearch" onclick="location.reload()"
            class="nav-link"
            th:classappend="${activePage} == 'userSearch' ? ' active fw-bold' : ' text-dark text-primary'">
           <i class="bi bi-search"></i> Ricerca utenti
         </a>
       </li>
       <li>
-        <a href="/profile"
+        <a href="/profile" onclick="location.reload()"
            class="nav-link"
            th:classappend="${activePage} == 'profile' ? ' active fw-bold' : ' text-dark text-primary'">
           <i class="bi bi-person-circle"></i> Profilo
