@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="container mt-4">
+        <h1 th:text="'Iscritti all\'evento &quot;' + ${evento.nome} + '&quot; di ' + ${utente.username}"></h1>
+
+        <ul class="list-group">
+            <li th:each="partecipazione : ${partecipazioni}" class="list-group-item">
+                <a th:href="@{'/user/' + ${partecipazione.partecipante.username}}" th:text="${partecipazione.partecipante.username}" class="text-decoration-none"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

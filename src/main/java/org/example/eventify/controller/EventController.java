@@ -284,6 +284,31 @@ public class EventController {
         return "fragments/like :: like";
     }
 
+    @GetMapping("/event/{id}/subscriptions")
+    public String eventSubscriptions(@PathVariable("id") Integer idEvento, HttpSession session, Model model) {
+        Utente utente = (Utente) session.getAttribute("user");
+        if (utente == null) {
+            return "redirect:/login";
+        }
+        if (!utente.getStato().equals("VERIFICATO")) {
+            return "redirect:/verify";
+        }
+
+        Evento evento = eventoService.findById(idEvento);
+        if (evento == null) {
+            return "redirect:/home";
+        }
+
+        if(evento.getOrganizzatore().getEmail().equals(utente.getEmail())) {
+            List<Partecipazione> partecipazioni = partecipazioneService.getPartecipazioneByEvento(evento);
+            model.addAttribute("partecipazioni", partecipazioni);
+            model.addAttribute("utente", utente);
+            model.addAttribute("evento", evento);
+        }
+
+        return "eventSubscriptions";
+    }
+
     public void addImages(List<MultipartFile> immagini, Evento evento){
 
         String uploadsDir = new File("src/main/resources/uploads").getAbsolutePath();

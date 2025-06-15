@@ -62,6 +62,7 @@
             <p th:if="${finito}">• L'evento è terminato</p>
             <div class="d-flex justify-content-end gap-2">
               <a href="javascript:void(0);" id='partecipaButton' th:if="${(!isOwner and !tooYoung and !full and !finito) or partecipato}" class="btn btn-primary btn-sm" th:text="${partecipato} ? 'Disiscriviti' : 'Partecipa'" th:onclick="'subscribeToEvent(' + ${evento.idEvento} + ');'"></a>
+              <a th:href="'/event/' + ${evento.idEvento} + '/subscriptions'" id='subscriptionsButton' th:if="${isOwner}" class="btn btn-primary btn-sm" th:text="'Visualizza iscritti'"></a>
               <div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
                 <span class="visually-hidden">Loading...</span>
               </div>

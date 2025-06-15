@@ -13,4 +13,5 @@ public interface PartecipazioneRepository extends JpaRepository<Partecipazione, 
     Partecipazione getPartecipazioneByEventoAndPartecipante(Evento evento, Utente partecipante);
     List<Partecipazione> getPartecipazioneByPartecipante(Utente partecipante);
     Integer countPartecipazioneByEvento(Evento evento);
+    List<Partecipazione> getPartecipazionesByEvento (Evento evento);
 }

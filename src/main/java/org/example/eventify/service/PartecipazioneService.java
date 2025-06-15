@@ -41,4 +41,8 @@ public class PartecipazioneService {
    public Integer countPartecipazioneByEvento(Evento evento) {
         return partecipazioneRepository.countPartecipazioneByEvento(evento);
    }
+
+   public List<Partecipazione> getPartecipazioneByEvento (Evento evento){
+      return partecipazioneRepository.getPartecipazionesByEvento(evento);
+   }
 }
